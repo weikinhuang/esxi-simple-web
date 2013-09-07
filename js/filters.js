@@ -1,13 +1,12 @@
 "use strict";
 
 /* Filters */
-(function() {
+(function(module) {
 
-angular.module("myApp.filters", []).
-  filter("interpolate", ["version", function(version) {
-    return function(text) {
-      return String(text).replace(/\%VERSION\%/mg, version);
-    }
-  }]);
+	module.filter("interpolate", [ "version", function(version) {
+		return function(text) {
+			return String(text).replace(/\%VERSION\%/mg, version);
+		};
+	} ]);
 
-})();
+})(angular.module("esxiApp.filters", []));
