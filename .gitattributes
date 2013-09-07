@@ -1,0 +1,17 @@
+*				eol=lf
+
+*.eot			binary
+*.gif			binary
+*.ico			binary
+*.jpg			binary
+*.phar			binary
+*.png			binary
+*.svg			binary
+*.swf			binary
+*.ttf			binary
+*.woff			binary
+
+*.php			diff=php
+*.html			diff=html
+*.js			diff=js
+*.css			diff=css
