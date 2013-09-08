@@ -38,24 +38,20 @@
 		var htmlExtract = /<body.*?>\s?([\s\S]+?)\s?<\/body>/;
 
 		function transformResponse(data) {
-			var xmlData = (xmlExtract.exec(data) || [])[1];
-			var defaultResponse = {
-				html : $("<div>")
-			};
-			if (!xmlData) {
-				return defaultResponse;
-			}
 			var htmlData = ((htmlExtract.exec(data) || [])[1] || "").replace(/(?:<xml[\s\S]+<\/xml>)/, "").replace(/(?:<script[\s\S]+<\/script>)/, "");
-			try {
-				var jsonStr = xml2json(parseXml(xmlData)).replace(/{\sundefined/, "{");
-				var jsonObj = JSON.parse(jsonStr) || {};
-				var returnObj = jsonObj.object || jsonObj;
-				returnObj.html = $("<div>").html(htmlData);
-				return returnObj;
-			} catch (e) {
-				console.log(e.message);
-				return defaultResponse;
+			var xmlData = (xmlExtract.exec(data) || [])[1];
+			var returnObj = {};
+			if (xmlData) {
+				try {
+					var jsonStr = xml2json(parseXml(xmlData)).replace(/{\sundefined/, "{");
+					var jsonObj = JSON.parse(jsonStr) || {};
+					returnObj = jsonObj.object || jsonObj;
+				} catch (e) {
+					console.log(e.message);
+				}
 			}
+			returnObj.html = $("<div>").html(htmlData);
+			return returnObj;
 		}
 
 		return {
@@ -69,9 +65,26 @@
 			post : function(params, data) {
 				return $http({
 					url : "/mob/?" + $.param(params || {}),
-					method : "post",
-					data : data || {},
-					transformResponse : transformResponse
+					method : "get"
+				}).then(function(resp) {
+					data = data || {};
+					var nonce = transformResponse(resp.data).html.find(":input[name='vmware-session-nonce']").val();
+					if (nonce) {
+						data["vmware-session-nonce"] = nonce;
+					}
+					if (!nonce) {
+						return;
+					}
+					return $http({
+						url : "/mob/?" + $.param(params || {}),
+						method : "post",
+						data : $.param(data),
+						headers : {
+							'Content-Type' : 'application/x-www-form-urlencoded'
+						}
+					}).then(function(postResp) {
+						return transformResponse(resp.data);
+					});
 				});
 			}
 		};

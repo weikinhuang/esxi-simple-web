@@ -3,7 +3,8 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
-function decrypt($str) {
+function decrypt($str)
+{
     $ciphertext_dec = base64_decode($str);
     $iv_dec = substr($ciphertext_dec, 0, 32);
     $ciphertext_dec = substr($ciphertext_dec, 32);
@@ -14,9 +15,8 @@ $config = json_decode(preg_replace('!^\s*//.+$!m', '', file_get_contents(dirname
 
 $options = array(
     CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HEADER => false,
     CURLOPT_SSL_VERIFYPEER => false,
-    CURLOPT_SSL_VERIFYHOST => 2,
+    CURLOPT_SSL_VERIFYHOST => 0,
     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0,
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_CONNECTTIMEOUT => 5,
@@ -24,13 +24,20 @@ $options = array(
     CURLOPT_REFERER => '',
     CURLOPT_HEADER => false,
     CURLOPT_FRESH_CONNECT => true,
+    CURLOPT_HEADERFUNCTION => function ($curl, $header)
+    {
+        if (strpos($header, 'Set-Cookie:') === 0) {
+            header($header);
+        }
+        return strlen($header);
+    }
 );
 if ($config['username']) {
     $options[CURLOPT_USERPWD] = trim(decrypt($config['username'])) . ':' . trim(decrypt($config['password']));
     $options[CURLOPT_HTTPAUTH] = CURLAUTH_ANY;
 }
 
-//initializes this curl object
+// initializes this curl object
 $curl = curl_init();
 $url = 'https://' . $config['host'] . '/mob/';
 // append get parameters
@@ -39,7 +46,11 @@ if ($_GET) {
 }
 $options[CURLOPT_URL] = $url;
 if ($_POST) {
+    $options[CURLOPT_POST] = true;
     $options[CURLOPT_POSTFIELDS] = http_build_query($_POST);
+}
+if ($_COOKIE) {
+    $options[CURLOPT_COOKIE] = urldecode(http_build_query($_COOKIE, null, '; '));
 }
 
 // set all options
