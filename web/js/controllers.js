@@ -55,9 +55,7 @@
 		$scope.hostname = $location.host();
 		$scope.navItems = {
 			"/" : "Home",
-			"/vm" : "Virtual Machines",
-			"/view1" : "View 1",
-			"/view2" : "View 2"
+			"/vm" : "Virtual Machines"
 		};
 	});
 
