@@ -3,16 +3,18 @@
 /* Controllers */
 (function(module) {
 	module.controller("HomeController", [ "$scope", "esxApi", function($scope, esxApi) {
-		var apiResponse = esxApi.get({
+		var hostInfoResponse = esxApi.get({
 			moid : "ha-host"
 		});
-		$scope.hostData = apiResponse;
+		$scope.hostData = hostInfoResponse;
 		$scope.hostname = "Loading...";
-		apiResponse.success(function() {
+		hostInfoResponse.then(function(data) {
 			$scope.hostname = "hi";
+			return data;
 		});
-		apiResponse.success(function(data) {
-			console.log(data.html);
+		hostInfoResponse.then(function(data) {
+			console.log(data);
+			return data;
 		});
 	} ]);
 
@@ -24,14 +26,15 @@
 		$scope.totalVms = "Loading...";
 		$scope.vmList = vms;
 
-		apiResponse.success(function(data) {
+		apiResponse.then(function(data) {
 			$scope.totalVms = data.childEntity.ManagedObjectReference.length;
+			return data;
 		});
 
-		apiResponse.success(function(data) {
+		apiResponse.then(function(data) {
 			if (!data.childEntity || !data.childEntity.ManagedObjectReference) {
 				$scope.totalVms = "Error!";
-				return;
+				return data;
 			}
 			var vmArray = data.childEntity.ManagedObjectReference;
 			var totalVms = vmArray.length;
@@ -40,24 +43,28 @@
 					id : vmArray[i]["#text"],
 					info : esxApi.get({
 						moid : vmArray[i]["#text"]
-					}).success(function(data) {
+					}).then(function(data) {
 						console.log(data);
+						return data;
 					}),
 					runtime : esxApi.get({
 						moid : vmArray[i]["#text"],
 						doPath : "runtime"
-					}).success(function(data) {
+					}).then(function(data) {
 						console.log(data);
+						return data;
 					}),
 					quickStats : esxApi.get({
 						moid : vmArray[i]["#text"],
 						doPath : "summary.quickStats"
-					}).success(function(data) {
+					}).then(function(data) {
 						console.log(data);
+						return data;
 					}),
 				};
 			}
 			console.log(data);
+			return data;
 		});
 
 		$scope.powerOn = function(vm) {
@@ -69,6 +76,7 @@
 				method : "powerOn"
 			}).then(function(data) {
 				console.log(data);
+				return data;
 			});
 		};
 		$scope.powerOff = function(vm) {
@@ -80,6 +88,7 @@
 				method : "powerOff"
 			}).then(function(data) {
 				console.log(data);
+				return data;
 			});
 		};
 		$scope.shutdownGuest = function(vm) {
@@ -91,6 +100,7 @@
 				method : "shutdownGuest"
 			}).then(function(data) {
 				console.log(data);
+				return data;
 			});
 		};
 	} ]);

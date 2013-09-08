@@ -45,8 +45,11 @@
 			var xmlData = (xmlExtract.exec(data) || [])[1];
 			var returnObj = {};
 			if (xmlData) {
+				// sometimes attribute "type" is redefined
+				xmlData = xmlData.replace(/xsi:/g, "").replace(/(type="[^"]+".+?)type="[^"]+"/g, "$1");
 				try {
-					var jsonStr = xml2json(parseXml(xmlData)).replace(/{\sundefined/, "{");
+					var xml = parseXml(xmlData);
+					var jsonStr = xml2json(xml).replace(/{\sundefined/, "{");
 					var jsonObj = JSON.parse(jsonStr) || {};
 					returnObj = jsonObj.object || jsonObj;
 				} catch (e) {
@@ -61,8 +64,9 @@
 			get : function(params) {
 				return $http({
 					url : "/mob/?" + $.param(params || {}),
-					method : "get",
-					transformResponse : transformResponse
+					method : "get"
+				}).then(function(resp) {
+					return transformResponse(resp.data);
 				});
 			},
 			post : function(params, data) {

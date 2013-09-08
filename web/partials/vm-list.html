@@ -2,10 +2,10 @@
 <ul class="list-unstyled ul-icons">
 	<li data-ng-repeat="vm in vmList">
 		<i class="icon-desktop"></i>
-		<a data-ng-href="#/vm/{{vm.id}}">{{vm.info.data.config.name || 'Loading...'}}</a>
-		State: {{vm.runtime.data.dataObject.powerState}}
-		<a href="" data-ng-if="vm.runtime.data.dataObject.powerState != 'poweredOn'" data-ng-click="powerOn(vm)" data-prevent-default="">Power On</a>
-		<a href="" data-ng-if="vm.runtime.data.dataObject.powerState == 'poweredOn'" data-ng-click="powerOff(vm)"data-prevent-default="">Power Off</a>
-		<a href="" data-ng-if="vm.runtime.data.dataObject.powerState == 'poweredOn'" data-ng-click="shutdownGuest(vm)"data-prevent-default="">Shutdown Guest</a>
+		<a data-ng-href="#/vm/{{vm.id}}">{{vm.info.config.name || 'Loading...'}}</a>
+		State: {{vm.runtime.dataObject.powerState}}
+		<a href="" data-ng-if="vm.runtime.dataObject.powerState != 'poweredOn'" data-ng-click="powerOn(vm)" data-prevent-default="">Power On</a>
+		<a href="" data-ng-if="vm.runtime.dataObject.powerState == 'poweredOn'" data-ng-click="powerOff(vm)"data-prevent-default="">Power Off</a>
+		<a href="" data-ng-if="vm.runtime.dataObject.powerState == 'poweredOn'" data-ng-click="shutdownGuest(vm)"data-prevent-default="">Shutdown Guest</a>
 	</li>
 </ul>
