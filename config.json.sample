@@ -1,0 +1,7 @@
+{
+	"host" : "",
+	// generate a encrypted string with mob/encrypt.php
+	"username" : "",
+	// generate a encrypted string with mob/encrypt.php
+	"password" : ""
+}
