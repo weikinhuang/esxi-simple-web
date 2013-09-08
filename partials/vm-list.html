@@ -1,0 +1,7 @@
+<p>Total Vms: {{totalVms}}</p>
+<ul class="list-unstyled ul-icons">
+	<li data-ng-repeat="vm in vmList">
+		<i class="icon-desktop"></i>
+		<a data-ng-href="#/vm/{{vm.id}}">{{vm.info.data.config.name || 'Loading...'}}</a>
+	</li>
+</ul>

@@ -34,22 +34,27 @@
 			return dom;
 		}
 
-		var xmlExtract = /<xml.*?>\s?\s?([\s\S]+)\s?<\/xml>/;
+		var xmlExtract = /<xml.*?>\s?([\s\S]+?)\s?<\/xml>/;
+		var htmlExtract = /<body.*?>\s?([\s\S]+?)\s?<\/body>/;
 
 		function transformResponse(data) {
 			var xmlData = (xmlExtract.exec(data) || [])[1];
+			var defaultResponse = {
+				html : $("<div>")
+			};
 			if (!xmlData) {
-				return {};
+				return defaultResponse;
 			}
-			var jsonObj = {};
+			var htmlData = ((htmlExtract.exec(data) || [])[1] || "").replace(/(?:<xml[\s\S]+<\/xml>)/, "").replace(/(?:<script[\s\S]+<\/script>)/, "");
 			try {
 				var jsonStr = xml2json(parseXml(xmlData)).replace(/{\sundefined/, "{");
-				jsonObj = JSON.parse(jsonStr);
-				console.log(jsonObj);
-				return jsonObj;
+				var jsonObj = JSON.parse(jsonStr) || {};
+				var returnObj = jsonObj.object || jsonObj;
+				returnObj.html = $("<div>").html(htmlData);
+				return returnObj;
 			} catch (e) {
 				console.log(e.message);
-				return {};
+				return defaultResponse;
 			}
 		}
 

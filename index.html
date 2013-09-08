@@ -10,16 +10,16 @@
 	<script>document.write("<title>Welcome to " + document.location.host + "</title>");</script>
 
 	<!-- Bootstrap core CSS -->
-	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/bootstrap-theme.min.css" rel="stylesheet">
-	<link href="css/font-awesome.css" rel="stylesheet" media="screen">
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css" rel="stylesheet">
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 	<!-- Page styles -->
 	<link href="css/app.css" rel="stylesheet" media="screen">
 </head>
 
 <body data-ng-cloak="">
 
-	<header class="navbar" data-ng-controller="NavigationController">
+	<header class="navbar navbar-inverse navbar-fixed-top" data-ng-controller="NavigationController">
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -27,7 +27,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">ESXi - {{hostname}}</a>
+				<a class="navbar-brand" href="#/">ESXi - {{hostname}}</a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
@@ -37,7 +37,7 @@
 		</div>
 	</header>
 
-	<div class="container">
+	<div class="container" role="main">
 		<div data-ng-view=""></div>
 	</div>
 
@@ -45,17 +45,17 @@
 	================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script src="js/vendor/jquery-2.0.3.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 	<!-- Angular js -->
-	<script src="js/vendor/angular-1.2.0-rc.2.min.js"></script>
-	<script src="js/vendor/angular-animate.min.js"></script>
-	<script src="js/vendor/angular-cookies.min.js"></script>
-	<script src="js/vendor/angular-route.min.js"></script>
-	<script src="js/vendor/angular-touch.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-animate.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-cookies.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-route.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-touch.min.js"></script>
 	<!-- Include class lib -->
 	<script src="js/vendor/classify-0.10.4.min.js"></script>
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script src="js/vendor/bootstrap.min.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 	<script src="js/vendor/xml2json.js"></script>
 	<!-- Include spa scripts -->
 	<script src="js/app.js"></script>
