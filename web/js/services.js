@@ -8,6 +8,9 @@
 
 	module.value("hostname", document.location.host);
 
+	module.value("esxiVersionMajor", (/^VMware ESXi (\d+)/.exec(window.ID_EESX) || [])[1] || 0);
+	module.value("esxiVersionMinor", (/^VMware ESXi \d+\.(\d+)/.exec(window.ID_EESX) || [])[1] || 0);
+
 	module.factory("esxApi", function($http) {
 		function parseXml(xml) {
 			var dom = null;
