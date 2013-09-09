@@ -31,7 +31,9 @@ $options = array(
     CURLOPT_FRESH_CONNECT => true,
     CURLOPT_HEADERFUNCTION => function ($curl, $header)
     {
-        if (strpos($header, 'Set-Cookie:') === 0) {
+        if (strpos($header, 'Set-Cookie:') === 0
+            || strpos($header, 'Content-Type:') === 0
+        ) {
             header($header);
         }
         return strlen($header);
