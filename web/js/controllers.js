@@ -46,21 +46,7 @@
 					}).then(function(data) {
 						console.log(data);
 						return data;
-					}),
-					runtime : esxApi.get({
-						moid : vmArray[i]["#text"],
-						doPath : "runtime"
-					}).then(function(data) {
-						console.log(data);
-						return data;
-					}),
-					quickStats : esxApi.get({
-						moid : vmArray[i]["#text"],
-						doPath : "summary.quickStats"
-					}).then(function(data) {
-						console.log(data);
-						return data;
-					}),
+					})
 				};
 			}
 			console.log(data);

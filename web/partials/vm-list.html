@@ -4,8 +4,9 @@
 		<i class="icon-desktop"></i>
 		<a data-ng-href="#/vm/{{vm.id}}">{{vm.info.config.name || 'Loading...'}}</a>
 		State: {{vm.runtime.dataObject.powerState}}
-		<a href="" data-ng-if="vm.runtime.dataObject.powerState != 'poweredOn'" data-ng-click="powerOn(vm)" data-prevent-default="">Power On</a>
-		<a href="" data-ng-if="vm.runtime.dataObject.powerState == 'poweredOn'" data-ng-click="powerOff(vm)"data-prevent-default="">Power Off</a>
-		<a href="" data-ng-if="vm.runtime.dataObject.powerState == 'poweredOn'" data-ng-click="shutdownGuest(vm)"data-prevent-default="">Shutdown Guest</a>
+		<a href="" data-ng-if="vm.info.runtime.powerState != 'poweredOn'" data-ng-click="powerOn(vm)" data-prevent-default="">Power On</a>
+		<a href="" data-ng-if="vm.info.runtime.powerState == 'poweredOn'" data-ng-click="powerOff(vm)"data-prevent-default="">Power Off</a>
+		<a href="" data-ng-if="vm.info.runtime.powerState == 'poweredOn'" data-ng-click="shutdownGuest(vm)"data-prevent-default="">Shutdown Guest</a>
+		<img data-ng-src="/screen?id={{vm.id}}&w=100" data-ng-if="vm.info.runtime.powerState == 'poweredOn'" />
 	</li>
 </ul>

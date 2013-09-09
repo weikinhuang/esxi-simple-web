@@ -18,3 +18,16 @@ scp -r web {ESXi hostname}:/usr/lib/vmware/hostd/docroot/
 
 Then navigate to `https://{ESXi hostname}/web/`, accept the certificate error and
 enter your username/password for the host.
+
+## Development
+
+Requires php >= 5.4.0
+
+Start the development server with
+
+```bash
+php -S 127.0.0.1:8080 proxy.php
+```
+
+In your browser go to `http://localhost:8080/encrypt.php` to generate the config file.
+Afterwards go to your browser and visit `http://localhost:8080/web/` and start developing!

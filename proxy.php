@@ -3,6 +3,10 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
+if (file_exists(__DIR__ . '/' . $_SERVER['REQUEST_URI'])) {
+    return false;
+}
+
 function decrypt($str)
 {
     $ciphertext_dec = base64_decode($str);
@@ -11,7 +15,7 @@ function decrypt($str)
     return mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($_SERVER['HTTP_HOST']), $ciphertext_dec, MCRYPT_MODE_CBC, $iv_dec);
 }
 
-$config = json_decode(preg_replace('!^\s*//.+$!m', '', file_get_contents(dirname(__DIR__) . '/config.json')), true);
+$config = json_decode(preg_replace('!^\s*//.+$!m', '', file_get_contents(__DIR__ . '/config.json')), true);
 
 $options = array(
     CURLOPT_FOLLOWLOCATION => true,
@@ -39,7 +43,7 @@ if ($config['username']) {
 
 // initializes this curl object
 $curl = curl_init();
-$url = 'https://' . $config['host'] . '/mob/';
+$url = 'https://' . $config['host'] . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 // append get parameters
 if ($_GET) {
     $url .= '?' . http_build_query($_GET);
