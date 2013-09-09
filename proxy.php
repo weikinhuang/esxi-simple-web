@@ -3,6 +3,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
+// proxy router
 if (file_exists(__DIR__ . '/' . $_SERVER['REQUEST_URI'])) {
     return false;
 }
