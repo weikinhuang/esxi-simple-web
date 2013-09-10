@@ -23,32 +23,38 @@
 			moid : "ha-folder-vm"
 		});
 		var vms = {};
+		var vmArr = [];
 		$scope.totalVms = "Loading...";
-		$scope.vmList = vms;
+		$scope.vmList = vmArr;
+		$scope.vmOrder = '-id';
 
 		apiResponse.then(function(data) {
-			$scope.totalVms = data.childEntity.ManagedObjectReference.length;
+			if (!data.childEntity || !data.childEntity.ManagedObjectReference) {
+				$scope.totalVms = "Error!";
+			} else {
+				$scope.totalVms = data.childEntity.ManagedObjectReference.length;
+			}
 			return data;
 		});
 
 		apiResponse.then(function(data) {
 			if (!data.childEntity || !data.childEntity.ManagedObjectReference) {
-				$scope.totalVms = "Error!";
 				return data;
 			}
-			var vmArray = data.childEntity.ManagedObjectReference;
-			var totalVms = vmArray.length;
-			for ( var i = 0; i < totalVms; i++) {
-				vms[vmArray[i]["#text"]] = {
-					id : vmArray[i]["#text"],
+			angular.forEach(data.childEntity.ManagedObjectReference, function(vm) {
+				var vmId = vm["#text"];
+				var vmData = {
+					id : vmId,
 					info : esxApi.get({
-						moid : vmArray[i]["#text"]
+						moid : vmId
 					}).then(function(data) {
 						console.log(data);
 						return data;
 					})
 				};
-			}
+				vms[vmId] = vmData;
+				vmArr.push(vmData);
+			});
 			console.log(data);
 			return data;
 		});
@@ -83,6 +89,55 @@
 			}
 			esxApi.post({
 				moid : vm.id,
+				method : "shutdownGuest"
+			}).then(function(data) {
+				console.log(data);
+				return data;
+			});
+		};
+	} ]);
+
+	module.controller("VmController", [ "$scope", "$routeParams", "esxApi", function($scope, $routeParams, esxApi) {
+		var vms = {};
+		$scope.id = $routeParams.id;
+
+		$scope.info = esxApi.get({
+			moid : $routeParams.id
+		}).then(function(data) {
+			console.log(data);
+			return data;
+		});
+
+		$scope.powerOn = function(vm) {
+			if (!confirm("Power on virtual machine?")) {
+				return;
+			}
+			esxApi.post({
+				moid : $routeParams.id,
+				method : "powerOn"
+			}).then(function(data) {
+				console.log(data);
+				return data;
+			});
+		};
+		$scope.powerOff = function(vm) {
+			if (!confirm("Power off virtual machine?")) {
+				return;
+			}
+			esxApi.post({
+				moid : $routeParams.id,
+				method : "powerOff"
+			}).then(function(data) {
+				console.log(data);
+				return data;
+			});
+		};
+		$scope.shutdownGuest = function(vm) {
+			if (!confirm("Shutdown virtual machine?")) {
+				return;
+			}
+			esxApi.post({
+				moid : $routeParams.id,
 				method : "shutdownGuest"
 			}).then(function(data) {
 				console.log(data);

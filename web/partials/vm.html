@@ -1,7 +1,52 @@
 <p>Total Vms: {{totalVms}}</p>
-<ul class="list-unstyled ul-icons">
-	<li data-ng-repeat="vm in vmList">
-		<i class="icon-desktop"></i>
-		<a data-ng-href="#/vm/{{vm.id}}">{{vm.info.data.config.name || 'Loading...'}}</a>
-	</li>
-</ul>
+<i class="icon-desktop"></i>
+<a data-ng-href="#/vm/{{id}}">{{info.config.name || 'Loading...'}}</a>
+State: {{runtime.dataObject.powerState}}
+<a href="" data-ng-if="info.runtime.powerState != 'poweredOn'" data-ng-click="powerOn(vm)" data-prevent-default="">Power On</a>
+<a href="" data-ng-if="info.runtime.powerState == 'poweredOn'" data-ng-click="powerOff(vm)"data-prevent-default="">Power Off</a>
+<a href="" data-ng-if="info.runtime.powerState == 'poweredOn'" data-ng-click="shutdownGuest(vm)"data-prevent-default="">Shutdown Guest</a>
+<img data-ng-src="/screen?id={{id}}&w=100" data-ng-if="info.runtime.powerState == 'poweredOn'" />
+<br />
+
+<span data-ng-if="info.runtime.powerState == 'poweredOn'">
+	<span>Cpu: {{info.summary.quickStats.overallCpuUsage}} MHz</span>
+	<br />
+	<span>Active Guest Mem: {{info.summary.quickStats.guestMemoryUsage}} MB</span>
+	<br />
+	<span>Consumed Host Mem: {{info.summary.quickStats.hostMemoryUsage}} MB</span>
+	<br />
+</span>
+
+<span>Disk: {{info.summary.storage.committed / (1024 * 1024 * 1024) | number:2}} GB / {{info.summary.storage.uncommitted / (1024 * 1024 * 1024) | number:2}} GB</span>
+
+<br />
+<br />
+<table class="table">
+	<tr>
+		<td>Guest OS:</td><td>{{info.summary.guest.guestFullName || info.summary.config.guestFullName}}</td>
+	</tr>
+	<tr>
+		<td>Compatibility:</td><td>{{info.summary.guest.hostMemoryUsage}}</td>
+	</tr>
+	<tr>
+		<td>VMware Tools:</td><td>{{info.summary.guest.toolsRunningStatus}}</td>
+	</tr>
+	<tr>
+		<td>DNS Name:</td><td>{{info.summary.guest.hostName}}</td>
+	</tr>
+	<tr>
+		<td>IP Address:</td><td>{{info.summary.guest.ipAddress}}</td>
+	</tr>
+	<tr>
+		<td>Notes:</td><td>{{info.summary.config.annotation || ""}}</td>
+	</tr>
+</table>
+<!--
+config
+memoryReservation: "0"
+memorySizeMB: "1024"
+name: "splunk01.weikinhuang.com"
+numCpu: "2"
+numEthernetCards: "1"
+numVirtualDisks: "2"
+-->

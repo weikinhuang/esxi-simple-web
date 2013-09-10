@@ -1,56 +1,44 @@
 <p>Total Vms: {{totalVms}}</p>
-<ul class="list-unstyled ul-icons">
-	<li data-ng-repeat="vm in vmList">
+
+<table class="table">
+<thead>
+	<tr>
+		<th colspan="2">Name</th>
+		<th>Host CPU</th>
+		<th>Guest Mem</th>
+		<th class="hidden-xs hidden-sm">Host Mem</th>
+		<th>Disk Space</th>
+	</tr>
+</thead>
+<tbody>
+
+</tbody>
+<tr data-ng-repeat="vm in vmList | orderBy:'info.config.name'" class="ng-class:vm.info.runtime.powerState">
+	<td>
 		<i class="icon-desktop"></i>
 		<a data-ng-href="#/vm/{{vm.id}}">{{vm.info.config.name || 'Loading...'}}</a>
-		State: {{vm.runtime.dataObject.powerState}}
-		<a href="" data-ng-if="vm.info.runtime.powerState != 'poweredOn'" data-ng-click="powerOn(vm)" data-prevent-default="">Power On</a>
-		<a href="" data-ng-if="vm.info.runtime.powerState == 'poweredOn'" data-ng-click="powerOff(vm)"data-prevent-default="">Power Off</a>
-		<a href="" data-ng-if="vm.info.runtime.powerState == 'poweredOn'" data-ng-click="shutdownGuest(vm)"data-prevent-default="">Shutdown Guest</a>
-<!-- 		<img data-ng-src="/screen?id={{vm.id}}&w=100" data-ng-if="vm.info.runtime.powerState == 'poweredOn'" /> -->
-		<br />
-		
-		<span data-ng-if="vm.info.runtime.powerState == 'poweredOn'">
-			<span>Cpu: {{vm.info.summary.quickStats.overallCpuUsage}} MHz</span>
-			<br />
-			<span>Active Guest Mem: {{vm.info.summary.quickStats.guestMemoryUsage}} MB</span>
-			<br />
-			<span>Consumed Host Mem: {{vm.info.summary.quickStats.hostMemoryUsage}} MB</span>
-			<br />
-		</span>
-		
-		<span>Disk: {{vm.info.summary.storage.committed / (1024 * 1024 * 1024) | number:2}} GB / {{vm.info.summary.storage.uncommitted / (1024 * 1024 * 1024) | number:2}} GB</span>
-		
-		<br />
-		<br />
-		<table class="table">
-			<tr>
-				<td>Guest OS:</td><td>{{vm.info.summary.guest.guestFullName || vm.info.summary.config.guestFullName}}</td>
-			</tr>
-			<tr>
-				<td>Compatibility:</td><td>{{vm.info.summary.guest.hostMemoryUsage}}</td>
-			</tr>
-			<tr>
-				<td>VMware Tools:</td><td>{{vm.info.summary.guest.toolsRunningStatus}}</td>
-			</tr>
-			<tr>
-				<td>DNS Name:</td><td>{{vm.info.summary.guest.hostName}}</td>
-			</tr>
-			<tr>
-				<td>IP Address:</td><td>{{vm.info.summary.guest.ipAddress}}</td>
-			</tr>
-			<tr>
-				<td>Notes:</td><td>{{vm.info.summary.config.annotation || ""}}</td>
-			</tr>
-		</table>
-	</li>
-</ul>
-<!--
-config
-memoryReservation: "0"
-memorySizeMB: "1024"
-name: "splunk01.weikinhuang.com"
-numCpu: "2"
-numEthernetCards: "1"
-numVirtualDisks: "2"
--->
+	</td>
+	<td>
+		{{vm.info.runtime.powerState}}
+		<a href="" data-ng-if="vm.info.runtime.powerState != 'poweredOn'" data-ng-click="powerOn(vm)" data-prevent-default="">
+			<i class="icon-play"></i>Power On
+		</a>
+		<a href="" data-ng-if="vm.info.runtime.powerState == 'poweredOn'" data-ng-click="powerOff(vm)" data-prevent-default="">Power Off</a>
+		<a href="" data-ng-if="vm.info.runtime.powerState == 'poweredOn'" data-ng-click="shutdownGuest(vm)" data-prevent-default="">Shutdown Guest</a>
+	</td>
+	<td class="text-right">
+		{{vm.info.summary.quickStats.overallCpuUsage || '0'}} MHz
+	</td>
+	<td class="text-right">
+		{{vm.info.summary.quickStats.guestMemoryUsage || '0'}} MB
+	</td>
+	<td class="text-right hidden-xs hidden-sm">
+		{{vm.info.summary.quickStats.hostMemoryUsage || '0'}} MB
+	</td>
+	<td class="text-right">
+		{{vm.info.summary.storage.committed / (1024 * 1024 * 1024) | number:2}} GB 
+		<span class="hidden-xs hidden-sm">/ {{vm.info.summary.storage.uncommitted / (1024 * 1024 * 1024) | number:2}} GB</span>
+	</td>
+</tr>
+</tbody>
+</table>
