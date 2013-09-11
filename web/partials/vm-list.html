@@ -1,44 +1,51 @@
+<div class="vm-list">
 <p>Total Vms: {{totalVms}}</p>
 
-<table class="table">
+<table class="table" style="width:100%">
 <thead>
 	<tr>
 		<th colspan="2">Name</th>
-		<th>Host CPU</th>
-		<th>Guest Mem</th>
-		<th class="hidden-xs hidden-sm">Host Mem</th>
-		<th>Disk Space</th>
+		<th class="text-center"><span class="hidden-inline-xs">Host </span>CPU</th>
+		<th class="text-center"><span class="hidden-inline-xs">Guest </span>Mem</th>
+		<th class="hidden-xs hidden-sm text-center">Host Mem</th>
+		<th class="text-center">Disk<span class="hidden-inline-xs"> Space</span></th>
 	</tr>
 </thead>
 <tbody>
 
 </tbody>
 <tr data-ng-repeat="vm in vmList | orderBy:'info.config.name'" class="ng-class:vm.info.runtime.powerState">
-	<td>
-		<i class="icon-desktop"></i>
-		<a data-ng-href="#/vm/{{vm.id}}">{{vm.info.config.name || 'Loading...'}}</a>
+	<td class="no-wrap vm-col-name">
+		<div class="st-fade">
+			<i class="icon icon-desktop ng-class:vm.info.runtime.powerState"></i>
+			<a data-ng-href="#/vm/{{vm.id}}">{{vm.info.config.name || 'Loading...'}}</a>
+		</div>
 	</td>
-	<td>
-		{{vm.info.runtime.powerState}}
+	<td class="no-wrap vm-col-power">
+		<span class="hidden-inline-xs hidden-inline-sm">{{vm.info.runtime.powerState}}</span>
+		<!-- Power On options -->
 		<a href="" data-ng-if="vm.info.runtime.powerState != 'poweredOn'" data-ng-click="powerOn(vm)" data-prevent-default="">
-			<i class="icon-play"></i>Power On
+			<i class="icon icon-play" title="Power On"></i><span class="hidden-inline-xs hidden-inline-sm">Power On</span>
 		</a>
-		<a href="" data-ng-if="vm.info.runtime.powerState == 'poweredOn'" data-ng-click="powerOff(vm)" data-prevent-default="">Power Off</a>
-		<a href="" data-ng-if="vm.info.runtime.powerState == 'poweredOn'" data-ng-click="shutdownGuest(vm)" data-prevent-default="">Shutdown Guest</a>
+		<!-- Power Off options -->
+		<a href="" data-ng-if="vm.info.runtime.powerState == 'poweredOn'" data-ng-click="shutdownGuest(vm)" data-prevent-default="">
+			<i class="icon icon-stop" title="Shutdown Guest"></i><span class="hidden-inline-xs hidden-inline-sm">Shutdown Guest</span>
+		</a>
 	</td>
-	<td class="text-right">
+	<td class="text-right no-wrap">
 		{{vm.info.summary.quickStats.overallCpuUsage || '0'}} MHz
 	</td>
-	<td class="text-right">
+	<td class="text-right no-wrap">
 		{{vm.info.summary.quickStats.guestMemoryUsage || '0'}} MB
 	</td>
-	<td class="text-right hidden-xs hidden-sm">
+	<td class="text-right hidden-xs hidden-sm no-wrap">
 		{{vm.info.summary.quickStats.hostMemoryUsage || '0'}} MB
 	</td>
-	<td class="text-right">
+	<td class="text-right no-wrap">
 		{{vm.info.summary.storage.committed / (1024 * 1024 * 1024) | number:2}} GB 
-		<span class="hidden-xs hidden-sm">/ {{vm.info.summary.storage.uncommitted / (1024 * 1024 * 1024) | number:2}} GB</span>
+		<span class="hidden-inline-xs hidden-inline-sm">/ {{vm.info.summary.storage.uncommitted / (1024 * 1024 * 1024) | number:2}} GB</span>
 	</td>
 </tr>
 </tbody>
 </table>
+</div>
