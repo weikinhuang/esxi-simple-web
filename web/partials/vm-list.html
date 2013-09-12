@@ -14,7 +14,7 @@
 <tbody>
 
 </tbody>
-<tr data-ng-repeat="vm in vmList | orderBy:'info.config.name'" class="ng-class:vm.info.runtime.powerState">
+<tr data-ng-repeat="(vmid, vm) in vmList | toArray | orderBy:'info.config.name'" class="ng-class:vm.info.runtime.powerState">
 	<td class="no-wrap vm-col-name">
 		<div class="st-fade">
 			<i class="icon icon-desktop ng-class:vm.info.runtime.powerState"></i>
@@ -48,4 +48,7 @@
 </tr>
 </tbody>
 </table>
+<p class="text-right">
+	<a href="" type="button" class="btn btn-primary" data-ng-click="refresh()" data-prevent-default="">{{refreshStatus}}</a>
+</p>
 </div>

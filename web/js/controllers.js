@@ -19,17 +19,21 @@
 	} ]);
 
 	module.controller("VmListController", [ "$scope", "esxApi", function($scope, esxApi) {
-		var apiResponse = esxApi.get({
-			moid : "ha-folder-vm"
-		});
-
 		var timer = null;
+		var refreshInterval = 30;
+		var isRefreshing = false;
+
+		var vms = {};
+		$scope.totalVms = "Loading...";
+		$scope.vmList = vms;
 
 		function loadVms() {
-			var vms = {};
-			var vmArr = [];
-			$scope.totalVms = "Loading...";
-			$scope.vmList = vmArr;
+			$scope.refreshStatus = "Refreshing...";
+			isRefreshing = true;
+
+			var apiResponse = esxApi.get({
+				moid : "ha-folder-vm"
+			});
 
 			apiResponse.then(function(data) {
 				if (!data.childEntity || !data.childEntity.ManagedObjectReference) {
@@ -37,6 +41,8 @@
 				} else {
 					$scope.totalVms = data.childEntity.ManagedObjectReference.length;
 				}
+				$scope.refreshStatus = "Refresh";
+				isRefreshing = false;
 				return data;
 			});
 
@@ -44,32 +50,43 @@
 				if (!data.childEntity || !data.childEntity.ManagedObjectReference) {
 					return data;
 				}
+
+				var newVms = {};
 				angular.forEach(data.childEntity.ManagedObjectReference, function(vm) {
 					var vmId = vm["#text"];
-					var vmData = {
-						id : vmId,
-						info : esxApi.get({
+					if (vms[vmId]) {
+						newVms[vmId] = vms[vmId];
+						esxApi.get({
 							moid : vmId
 						}).then(function(data) {
-							console.log(data);
+							newVms[vmId].info = data;
 							return data;
-						})
-					};
-					vms[vmId] = vmData;
-					vmArr.push(vmData);
+						});
+					} else {
+						var vmData = {
+							id : vmId,
+							info : esxApi.get({
+								moid : vmId
+							})
+						};
+						newVms[vmId] = vmData;
+					}
 				});
+				vms = newVms;
+				$scope.vmList = newVms;
 				return data;
 			});
 
+			// refresh this every X seconds
 			apiResponse.then(function(data) {
-				setTimeout(function() {
+				timer = setTimeout(function() {
+					timer = null;
 					loadVms();
-				}, 30000);
+				}, refreshInterval * 1000);
 				return data;
 			});
 		}
 		loadVms();
-
 
 		$scope.$on("$destroy", function() {
 			if (timer) {
@@ -77,8 +94,18 @@
 			}
 		});
 
+		$scope.refresh = function() {
+			if (isRefreshing) {
+				return;
+			}
+			loadVms();
+		};
+
 		$scope.powerOn = function(vm) {
-			if (!confirm("Power on virtual machine?")) {
+			if (!vm.info.config || !vm.info.config.name) {
+				return;
+			}
+			if (!confirm("Power on " + vm.info.config.name + "?")) {
 				return;
 			}
 			esxApi.post({
@@ -87,7 +114,10 @@
 			});
 		};
 		$scope.shutdownGuest = function(vm) {
-			if (!confirm("Shutdown virtual machine?")) {
+			if (!vm.info.config || !vm.info.config.name) {
+				return;
+			}
+			if (!confirm("Shutdown " + vm.info.config.name + "?")) {
 				return;
 			}
 			esxApi.post({
