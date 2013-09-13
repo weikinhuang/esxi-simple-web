@@ -6,7 +6,7 @@
 
 	module.value("version", "0.1");
 
-	module.value("hostname", document.location.host);
+	module.value("hostname", document.location.hostname);
 
 	module.value("esxiVersionMajor", (/^VMware ESXi (\d+)/.exec(window.ID_EESX) || [])[1] || 0);
 	module.value("esxiVersionMinor", (/^VMware ESXi \d+\.(\d+)/.exec(window.ID_EESX) || [])[1] || 0);

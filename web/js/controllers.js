@@ -2,26 +2,41 @@
 
 /* Controllers */
 (function(module) {
-	module.controller("HomeController", [ "$scope", "esxApi", function($scope, esxApi) {
-		var hostInfoResponse = esxApi.get({
-			moid : "ha-host"
-		});
-		$scope.hostData = hostInfoResponse;
-		$scope.hostname = "Loading...";
-		hostInfoResponse.then(function(data) {
-			$scope.hostname = "hi";
-			return data;
-		});
-		hostInfoResponse.then(function(data) {
-			console.log(data);
-			return data;
-		});
+	module.controller("HomeController", [ "$scope", "esxApi", "hostname", "$rootScope", function($scope, esxApi, hostname, $rootScope) {
+		var refreshInterval = 30;
+		$rootScope.title = "Welcome to " + hostname;
+
+		function getHostData(shouldUpdate) {
+			var hostInfoResponse = esxApi.get({
+				moid : "ha-host"
+			});
+			hostInfoResponse.then(function(data) {
+				console.log(data);
+				return data;
+			});
+			if (shouldUpdate) {
+				hostInfoResponse.then(function(data) {
+					setTimeout(function() {
+						getHostData(true).then(function(data) {
+							$scope.host = data;
+							return data;
+						});
+					}, refreshInterval * 1000);
+					return data;
+				});
+			}
+			return hostInfoResponse;
+		}
+
+		$scope.host = getHostData(true);
 	} ]);
 
-	module.controller("VmListController", [ "$scope", "esxApi", function($scope, esxApi) {
+	module.controller("VmListController", [ "$scope", "esxApi", "hostname", "$rootScope", function($scope, esxApi, hostname, $rootScope) {
 		var timer = null;
 		var refreshInterval = 30;
 		var isRefreshing = false;
+
+		$rootScope.title = "VMs on " + hostname;
 
 		var vms = {};
 		$scope.totalVms = "Loading...";

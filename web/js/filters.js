@@ -3,18 +3,6 @@
 /* Filters */
 (function(module) {
 
-	module.filter("interpolate", [ "version", function(version) {
-		return function(text) {
-			return String(text).replace(/\%VERSION\%/mg, version);
-		};
-	} ]);
-
-	module.filter("interpolate", [ "version", function(version) {
-		return function(text) {
-			return String(text).replace(/\%VERSION\%/mg, version);
-		};
-	} ]);
-
 	var hasOwn = Object.prototype.hasOwnProperty;
 	module.filter('toArray', function() {
 		return function(o) {
