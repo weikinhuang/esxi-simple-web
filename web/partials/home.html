@@ -4,60 +4,85 @@
 	<h3>General</h3>
 	<table class="table">
 		<tr>
-			<th>Model:</th>
+			<th>Model</th>
 			<td>{{host.summary.hardware.model || ""}}</td>
 		</tr>
 		<tr>
-			<th>Processor Type:</th>
+			<th>Processor Type</th>
 			<td>{{host.summary.hardware.cpuModel}}</td>
 		</tr>
 		<tr>
-			<th>Logical Processors:</th>
+			<th>Logical Processors</th>
 			<td>{{host.summary.hardware.numCpuCores}}</td>
 		</tr>
 		<tr>
-			<th>NICs:</th>
+			<th>NICs</th>
 			<td>{{host.summary.hardware.numNics}}</td>
 		</tr>
 		<tr>
-			<th>Virtual Machines:</th>
+			<th>Virtual Machines</th>
 			<td>{{host.vm.ManagedObjectReference.length}}</td>
 		</tr>
 		<tr>
-			<th>State:</th>
+			<th>State</th>
 			<td>{{host.summary.runtime.connectionState | camelcaseToSpace | ucwords}}</td>
 		</tr>
 		<tr>
-			<th>Uptime:</th>
+			<th>Uptime</th>
 			<td>{{host.summary.quickStats.uptime | timeWords}}</td>
 		</tr>
 	</table>
 </div>
 <div>
 	<h3>Hardware</h3>
-	<table class="table" data-ng-cloak="">
+	<table class="table">
 		<tr>
-			<th>Manufacturer:</th>
+			<th>Manufacture</th>
 			<td>{{host.summary.hardware.vendor || ""}}</td>
 		</tr>
 		<tr>
-			<th>Model:</th>
+			<th>Model</th>
 			<td>{{host.summary.hardware.model || ""}}</td>
 		</tr>
 		<tr>
-			<th>CPU:</th>
+			<th>CPU</th>
 			<td>{{host.summary.quickStats.overallCpuUsage}} MHz / {{host.summary.hardware.numCpuCores}} CPUs x {{host.summary.hardware.cpuMhz}} MHz</td>
 		</tr>
 		<tr>
-			<th>Memory:</th>
+			<th>Memory</th>
 			<td>{{host.summary.quickStats.overallMemoryUsage | roundMemory}} MB / {{host.summary.hardware.memorySize | roundMemory:2}} MB</td>
 		</tr>
 		<tr>
-			<th>Networking:</th>
+			<th>Networking</th>
 			<td>{{host.summary.config.name}}</td>
 		</tr>
 		<tr>
-			<th>Storage:</th>
+			<th>Storage</th>
+			<td>{{host.datastore.ManagedObjectReference.length}} Datastores(s)</td>
+		</tr>
+	</table>
+</div>
+<div>
+	<h3>Configuration</h3>
+	<table class="table">
+		<tr>
+			<th>ESX Version</th>
+			<td>{{host.summary.config.product.name}} {{host.summary.config.product.version}}, {{host.summary.config.product.build}}</td>
+		</tr>
+		<tr>
+			<th>vMotion Enabled</th>
+			<td>{{host.summary.config.vmotionEnabled ? "Yes" : "No"}}</td>
+		</tr>
+		<tr>
+			<th>vSphere HA State</th>
+			<td>{{host.summary.quickStats.overallMemoryUsage | roundMemory}} MB / {{host.summary.hardware.memorySize | roundMemory:2}} MB</td>
+		</tr>
+		<tr>
+			<th>Host Configuration for FT</th>
+			<td>{{host.summary.config.name}}</td>
+		</tr>
+		<tr>
+			<th>EVC Mode</th>
 			<td>{{host.datastore.ManagedObjectReference.length}} Datastores(s)</td>
 		</tr>
 	</table>
