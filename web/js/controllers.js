@@ -6,6 +6,9 @@
 		var refreshInterval = 30;
 		$rootScope.title = "Welcome to " + hostname;
 
+		$scope.cpuPercent = 0;
+		$scope.memPercent = 0;
+
 		function getHostData(shouldUpdate) {
 			var hostInfoResponse = esxApi.get({
 				moid : "ha-host"
@@ -15,6 +18,8 @@
 				var summary = data.summary;
 				delete summary.runtime.healthSystemRuntime;
 				console.log(JSON.stringify(summary, null, 2));
+				$scope.cpuPercent = (data.summary.quickStats.overallCpuUsage / (data.summary.hardware.numCpuCores * data.summary.hardware.cpuMhz)) * 100;
+				$scope.memPercent = ((data.summary.quickStats.overallMemoryUsage * (1024 * 1024)) / data.summary.hardware.memorySize) * 100;
 				return data;
 			});
 			if (shouldUpdate) {

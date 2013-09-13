@@ -4,6 +4,24 @@
 	<h3>General</h3>
 	<table class="table">
 		<tr>
+			<td>
+			Cpu: {{host.summary.quickStats.overallCpuUsage}} MHz / {{host.summary.hardware.numCpuCores}} CPUs x {{host.summary.hardware.cpuMhz}} MHz
+			<br />
+			<div class="progress">
+				<div class="progress-bar" role="progressbar" aria-valuenow="{{cpuPercent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{cpuPercent}}%;"></div>
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Memory: {{host.summary.quickStats.overallMemoryUsage | roundMemory}} MB / {{host.summary.hardware.memorySize | roundMemory:2}} MB
+			<br />
+			<div class="progress">
+				<div class="progress-bar" role="progressbar" aria-valuenow="{{memPercent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{memPercent}}%;"></div>
+			</div>
+			</td>
+		</tr>
+		<tr>
 			<th>Model</th>
 			<td>{{host.summary.hardware.model || ""}}</td>
 		</tr>
