@@ -1,1 +1,64 @@
 <p>Host: {{host.summary.config.name || "Loading..."}}</p>
+
+<div>
+	<h3>General</h3>
+	<table class="table">
+		<tr>
+			<th>Model:</th>
+			<td>{{host.summary.hardware.model || ""}}</td>
+		</tr>
+		<tr>
+			<th>Processor Type:</th>
+			<td>{{host.summary.hardware.cpuModel}}</td>
+		</tr>
+		<tr>
+			<th>Logical Processors:</th>
+			<td>{{host.summary.hardware.numCpuCores}}</td>
+		</tr>
+		<tr>
+			<th>NICs:</th>
+			<td>{{host.summary.hardware.numNics}}</td>
+		</tr>
+		<tr>
+			<th>Virtual Machines:</th>
+			<td>{{host.vm.ManagedObjectReference.length}}</td>
+		</tr>
+		<tr>
+			<th>State:</th>
+			<td>{{host.summary.runtime.connectionState | camelcaseToSpace | ucwords}}</td>
+		</tr>
+		<tr>
+			<th>Uptime:</th>
+			<td>{{host.summary.quickStats.uptime | timeWords}}</td>
+		</tr>
+	</table>
+</div>
+<div>
+	<h3>Hardware</h3>
+	<table class="table" data-ng-cloak="">
+		<tr>
+			<th>Manufacturer:</th>
+			<td>{{host.summary.hardware.vendor || ""}}</td>
+		</tr>
+		<tr>
+			<th>Model:</th>
+			<td>{{host.summary.hardware.model || ""}}</td>
+		</tr>
+		<tr>
+			<th>CPU:</th>
+			<td>{{host.summary.quickStats.overallCpuUsage}} MHz / {{host.summary.hardware.numCpuCores}} CPUs x {{host.summary.hardware.cpuMhz}} MHz</td>
+		</tr>
+		<tr>
+			<th>Memory:</th>
+			<td>{{host.summary.quickStats.overallMemoryUsage | roundMemory}} MB / {{host.summary.hardware.memorySize | roundMemory:2}} MB</td>
+		</tr>
+		<tr>
+			<th>Networking:</th>
+			<td>{{host.summary.config.name}}</td>
+		</tr>
+		<tr>
+			<th>Storage:</th>
+			<td>{{host.datastore.ManagedObjectReference.length}} Datastores(s)</td>
+		</tr>
+	</table>
+</div>

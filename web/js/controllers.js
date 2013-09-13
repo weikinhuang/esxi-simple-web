@@ -12,6 +12,9 @@
 			});
 			hostInfoResponse.then(function(data) {
 				console.log(data);
+				var summary = data.summary;
+				delete summary.runtime.healthSystemRuntime;
+				console.log(JSON.stringify(summary, null, 2));
 				return data;
 			});
 			if (shouldUpdate) {
