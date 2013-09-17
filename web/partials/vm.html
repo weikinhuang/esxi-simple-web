@@ -14,8 +14,8 @@ State: {{runtime.dataObject.powerState}}
 	<h4>Resources</h4>
 	<div class="container clearfix">
 		<div class="row">
-			<div class="col-md-3">Uptime</div>
-			<div class="col-md-9">
+			<div class="col-md-12">
+				Uptime
 				<strong>{{info.summary.quickStats.uptimeSeconds | timeWords}}</strong>
 				<small>Since {{info.summary.runtime.bootTime | date:"medium"}}</small>
 			</div>

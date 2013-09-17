@@ -8,8 +8,8 @@
 	<h4>Resources</h4>
 	<div class="container clearfix">
 		<div class="row">
-			<div class="col-md-3">Uptime</div>
-			<div class="col-md-9">
+			<div class="col-md-12">
+				Uptime
 				<strong>{{host.summary.quickStats.uptime | timeWords}}</strong>
 				<small>Since {{host.summary.runtime.bootTime | date:"medium"}}</small>
 			</div>
@@ -132,11 +132,11 @@
 		</div>
 		<div class="row">
 			<div class="col-md-3"><strong>vMotion Enabled</strong></div>
-			<div class="col-md-9">{{host.summary.config.vmotionEnabled ? "Yes" : "No"}}</div>
+			<div class="col-md-9">{{host.summary.config.vmotionEnabled == "true" ? "Yes" : "No"}}</div>
 		</div>
 		<div class="row">
 			<div class="col-md-3"><strong>Host Config for FT</strong></div>
-			<div class="col-md-9">{{host.summary.config.vmotionEnabled ? "Yes" : "No"}}</div>
+			<div class="col-md-9">{{host.summary.config.faultToleranceEnabled == "true" ? "Yes" : "No"}}</div>
 		</div>
 	</div>
 </div>
