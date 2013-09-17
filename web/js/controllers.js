@@ -3,7 +3,7 @@
 /* Controllers */
 (function(module) {
 	module.controller("HomeController", [ "$scope", "esxApi", "hostname", "$rootScope", function($scope, esxApi, hostname, $rootScope) {
-		var refreshInterval = 30;
+		var refreshInterval = 30, timer = null;
 		$rootScope.title = "Welcome to " + hostname;
 
 		$scope.cpuPercent = 0;
@@ -12,6 +12,10 @@
 		$scope.datastores = {};
 
 		function getHostData(shouldUpdate) {
+			if (timer) {
+				clearTimeout(timer);
+				timer = null;
+			}
 			var hostInfoResponse = esxApi.get({
 				moid : "ha-host"
 			});
@@ -20,12 +24,18 @@
 				$scope.memPercent = ((data.summary.quickStats.overallMemoryUsage * (1024 * 1024)) / data.summary.hardware.memorySize) * 100;
 				// also get network and datastore info
 				$scope.datastores = {};
+				if (!Array.isArray(data.datastore.ManagedObjectReference)) {
+					data.datastore.ManagedObjectReference = [ data.datastore.ManagedObjectReference ];
+				}
 				data.datastore.ManagedObjectReference.forEach(function(ds) {
 					$scope.datastores[ds["#text"]] = esxApi.get({
 						moid : ds["#text"]
 					});
 				});
 				$scope.networks = {};
+				if (!Array.isArray(data.network.ManagedObjectReference)) {
+					data.network.ManagedObjectReference = [ data.network.ManagedObjectReference ];
+				}
 				data.network.ManagedObjectReference.forEach(function(net) {
 					$scope.networks[net["#text"]] = esxApi.get({
 						moid : net["#text"]
@@ -35,7 +45,7 @@
 			});
 			if (shouldUpdate) {
 				hostInfoResponse.then(function(data) {
-					setTimeout(function() {
+					timer = setTimeout(function() {
 						getHostData(true).then(function(data) {
 							$scope.host = data;
 							return data;
@@ -165,7 +175,7 @@
 		var vmId = $routeParams.id;
 		$scope.id = vmId;
 
-		var refreshInterval = 30;
+		var refreshInterval = 30, timer = null;
 
 		$scope.cpuPercent = 0;
 		$scope.memPercent = 0;
@@ -173,15 +183,12 @@
 		$scope.datastores = {};
 
 		function getVmData(shouldUpdate) {
+			if (timer) {
+				clearTimeout(timer);
+				timer = null;
+			}
 			var vmInfoResponse = esxApi.get({
 				moid : vmId
-			});
-			vmInfoResponse.then(function(data) {
-				console.log(data);
-				delete data.summary.runtime.featureRequirement;
-				console.log(JSON.stringify(data.guest, null, 2));
-				console.log(JSON.stringify(data.summary, null, 2));
-				return data;
 			});
 			vmInfoResponse.then(function(data) {
 				$rootScope.title = "Vm: " + data.config.name;
@@ -191,22 +198,40 @@
 
 				// also get network and datastore info
 				$scope.datastores = {};
-				(Array.isArray(data.datastore.ManagedObjectReference) ? data.datastore.ManagedObjectReference : [ data.datastore.ManagedObjectReference ]).forEach(function(ds) {
+				if (!Array.isArray(data.datastore.ManagedObjectReference)) {
+					data.datastore.ManagedObjectReference = [ data.datastore.ManagedObjectReference ];
+				}
+				data.datastore.ManagedObjectReference.forEach(function(ds) {
 					$scope.datastores[ds["#text"]] = esxApi.get({
 						moid : ds["#text"]
 					});
 				});
 				$scope.networks = {};
-				(Array.isArray(data.network.ManagedObjectReference) ? data.network.ManagedObjectReference : [ data.network.ManagedObjectReference ]).forEach(function(net) {
+				if (!Array.isArray(data.network.ManagedObjectReference)) {
+					data.network.ManagedObjectReference = [ data.network.ManagedObjectReference ];
+				}
+				data.network.ManagedObjectReference.forEach(function(net) {
 					$scope.networks[net["#text"]] = esxApi.get({
 						moid : net["#text"]
 					});
 				});
+				if (data.guest.disk && !Array.isArray(data.guest.disk)) {
+					data.guest.disk = [ data.guest.disk ];
+				}
+
+				data.summary.storage.provisioned = parseInt(data.summary.storage.committed, 10) + parseInt(data.summary.storage.uncommitted, 10);
+				return data;
+			});
+			vmInfoResponse.then(function(data) {
+				console.log(data);
+				delete data.summary.runtime.featureRequirement;
+				console.log(JSON.stringify(data.guest, null, 2));
+				console.log(JSON.stringify(data.summary, null, 2));
 				return data;
 			});
 			if (shouldUpdate) {
 				vmInfoResponse.then(function(data) {
-					setTimeout(function() {
+					timer = setTimeout(function() {
 						getVmData(true).then(function(data) {
 							$scope.info = data;
 							return data;

@@ -77,11 +77,12 @@
 	});
 
 	module.filter("roundSpace", function() {
-		return function(memory, decimal) {
-			if (!memory) {
-				return memory;
+		return function(space, decimal) {
+			if (!space) {
+				return space;
 			}
-			var i = 0, b = parseInt(memory, 10);
+			console.log(space);
+			var i = 0, b = parseInt(space, 10);
 			while ((b / 1024) > 1) {
 				b /= 1024;
 				i++;

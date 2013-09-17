@@ -58,8 +58,38 @@ State: {{runtime.dataObject.powerState}}
 				</div>
 			</div>
 		</div>
+		
 		<div class="row">
-			<span>Disk: {{info.summary.storage.committed / (1024 * 1024 * 1024) | number:2}} GB / {{info.summary.storage.uncommitted / (1024 * 1024 * 1024) | number:2}} GB</span>
+			<strong>{{info.guest.disk.length || 0}} Mount(s)</strong>
+		</div>
+		<div class="row">
+			<div class="col-md-3">Provisioned Storage</div>
+			<div class="col-md-9"><strong>{{info.summary.storage.provisioned | roundSpace}}</strong></div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">Non-shared Storage</div>
+			<div class="col-md-9"><strong>{{info.summary.storage.unshared | roundSpace}}</strong></div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">Used Storage</div>
+			<div class="col-md-9"><strong>{{info.summary.storage.committed | roundSpace}}</strong></div>
+		</div>
+		<div class="row" data-ng-repeat="disk in info.guest.disk">
+			<div class="col-md-4">
+				<strong>{{disk.diskPath}}</strong>
+			</div>
+			<div class="col-md-4 text-right">{{disk.freeSpace | roundSpace}} Free / {{disk.capacity | roundSpace}} Total</div>
+			<div class="col-md-2 col-md-offset-2">
+				<div class="progress">
+					<div class="progress-bar"
+						role="progressbar"
+						aria-valuenow="{{((disk.capacity - disk.freeSpace) / disk.capacity) * 100}}"
+						aria-valuemin="0"
+						aria-valuemax="100"
+						style="width: {{((disk.capacity - disk.freeSpace) / disk.capacity) * 100}}%;"
+					></div>
+				</div>
+			</div>
 		</div>
 
 		<div class="row">
