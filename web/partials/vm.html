@@ -1,52 +1,166 @@
-<p>Total Vms: {{totalVms}}</p>
-<i class="icon-desktop"></i>
-<a data-ng-href="#/vm/{{id}}">{{info.config.name || 'Loading...'}}</a>
+<h3>
+	<i class="icon-desktop"></i> {{info.config.name || 'Loading...'}}
+</h3>
+<div class="row">
+	<img data-ng-src="/screen?id={{id}}&w=100" data-ng-if="info.runtime.powerState == 'poweredOn'" />
+</div>
+<div>
 State: {{runtime.dataObject.powerState}}
 <a href="" data-ng-if="info.runtime.powerState != 'poweredOn'" data-ng-click="powerOn(vm)" data-prevent-default="">Power On</a>
 <a href="" data-ng-if="info.runtime.powerState == 'poweredOn'" data-ng-click="powerOff(vm)"data-prevent-default="">Power Off</a>
 <a href="" data-ng-if="info.runtime.powerState == 'poweredOn'" data-ng-click="shutdownGuest(vm)"data-prevent-default="">Shutdown Guest</a>
-<img data-ng-src="/screen?id={{id}}&w=100" data-ng-if="info.runtime.powerState == 'poweredOn'" />
-<br />
+</div>
+<div>
+	<h4>Resources</h4>
+	<div class="container clearfix">
+		<div class="row">
+			<div class="col-md-3">Uptime</div>
+			<div class="col-md-9">
+				<strong>{{info.summary.quickStats.uptimeSeconds | timeWords}}</strong>
+				<small>Since {{info.summary.runtime.bootTime | date:"medium"}}</small>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				Cpu: <strong>{{info.summary.quickStats.overallCpuUsage}} MHz</strong>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="progress">
+					<div class="progress-bar"
+						role="progressbar"
+						aria-valuenow="{{cpuPercent}}"
+						aria-valuemin="0"
+						aria-valuemax="100"
+						style="width: {{cpuPercent}}"
+					></div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				Memory: <strong>{{info.summary.quickStats.guestMemoryUsage | roundMemory}} MB</strong> / {{info.summary.runtime.maxMemoryUsage | roundMemory}} MB
+				<br />
+				Consumed Host Mem: <strong>{{info.summary.quickStats.hostMemoryUsage}} MB</strong>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="progress">
+					<div class="progress-bar"
+						role="progressbar"
+						aria-valuenow="{{memPercent}}"
+						aria-valuemin="0"
+						aria-valuemax="100"
+						style="width: {{memPercent}}%;"
+					></div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<span>Disk: {{info.summary.storage.committed / (1024 * 1024 * 1024) | number:2}} GB / {{info.summary.storage.uncommitted / (1024 * 1024 * 1024) | number:2}} GB</span>
+		</div>
 
-<span data-ng-if="info.runtime.powerState == 'poweredOn'">
-	<span>Cpu: {{info.summary.quickStats.overallCpuUsage}} MHz</span>
-	<br />
-	<span>Active Guest Mem: {{info.summary.quickStats.guestMemoryUsage}} MB</span>
-	<br />
-	<span>Consumed Host Mem: {{info.summary.quickStats.hostMemoryUsage}} MB</span>
-	<br />
-</span>
+		<div class="row">
+			<strong>Storage: {{info.datastore.ManagedObjectReference.length || 1}} Datastore(s)</strong>
+		</div>
+		<div class="row" data-ng-repeat="datastore in datastores | toArray | orderBy:'summary.name'">
+			<div class="col-md-3">
+				<strong><a href="/folder?dcPath=ha-datacenter&dsName={{datastore.summary.name}}" target="_blank">{{datastore.summary.name}}</a></strong>
+			</div>
+			<div class="col-md-1">{{datastore.info.vmfs.ssd == "true" ? "SSD" : "Non-SSD"}}</div>
+			<div class="col-md-4 text-right">{{datastore.summary.freeSpace | roundSpace}} Free / {{datastore.summary.capacity | roundSpace}} Total</div>
+			<div class="col-md-2 text-right">{{datastore.vm.ManagedObjectReference.length || 0}} VMs</div>
+			<div class="col-md-2">
+				<div class="progress">
+					<div class="progress-bar"
+						role="progressbar"
+						aria-valuenow="{{((datastore.summary.capacity - datastore.summary.freeSpace) / datastore.summary.capacity) * 100}}"
+						aria-valuemin="0"
+						aria-valuemax="100"
+						style="width: {{((datastore.summary.capacity - datastore.summary.freeSpace) / datastore.summary.capacity) * 100}}%;"
+					></div>
+				</div>
+			</div>
+		</div>
 
-<span>Disk: {{info.summary.storage.committed / (1024 * 1024 * 1024) | number:2}} GB / {{info.summary.storage.uncommitted / (1024 * 1024 * 1024) | number:2}} GB</span>
-
-<br />
-<br />
-<table class="table">
-	<tr>
-		<td>Guest OS:</td><td>{{info.summary.guest.guestFullName || info.summary.config.guestFullName}}</td>
-	</tr>
-	<tr>
-		<td>Compatibility:</td><td>{{info.summary.guest.hostMemoryUsage}}</td>
-	</tr>
-	<tr>
-		<td>VMware Tools:</td><td>{{info.summary.guest.toolsRunningStatus}}</td>
-	</tr>
-	<tr>
-		<td>DNS Name:</td><td>{{info.summary.guest.hostName}}</td>
-	</tr>
-	<tr>
-		<td>IP Address:</td><td>{{info.summary.guest.ipAddress}}</td>
-	</tr>
-	<tr>
-		<td>Notes:</td><td>{{info.summary.config.annotation || ""}}</td>
-	</tr>
-</table>
-<!--
-config
-memoryReservation: "0"
-memorySizeMB: "1024"
-name: "splunk01.weikinhuang.com"
-numCpu: "2"
-numEthernetCards: "1"
-numVirtualDisks: "2"
--->
+		<div class="row">
+			<strong>Network: {{info.network.ManagedObjectReference.length || 1}} Network(s)</strong>
+		</div>
+		<div class="row" data-ng-repeat="network in networks | toArray | orderBy:'summary.name'">
+			<div class="col-md-8"><strong>{{network.summary.name}}</strong></div>
+			<div class="col-md-2 text-right" data-ng-show="network.summary.name">{{network.vm.ManagedObjectReference.length || 0}} VMs</div>
+		</div>
+	</div>
+</div>
+<div>
+	<h4>General</h4>
+	<div class="container clearfix">
+		<div class="row">
+			<div class="col-md-3">Guest OS:</div>
+			<div class="col-md-9">{{info.summary.guest.guestFullName || info.summary.config.guestFullName}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">VM Version:</div>
+			<div class="col-md-9">{{info.config.version}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">CPU:</div>
+			<div class="col-md-9">{{info.config.numCpu}} vCPU</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">Memory:</div>
+			<div class="col-md-9">{{info.summary.config.memorySizeMB | roundMemory}} MB</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">Memory Overhead:</div>
+			<div class="col-md-9">{{info.runtime.memoryOverhead | roundMemory:2:2}} MB</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">NICs:</div>
+			<div class="col-md-9">{{info.summary.config.numEthernetCards}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">vDisks:</div>
+			<div class="col-md-9">{{info.summary.config.numVirtualDisks}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">VMware Tools:</div>
+			<div class="col-md-9">{{info.summary.guest.toolsRunningStatus | camelcaseToSpace}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">DNS Name:</div>
+			<div class="col-md-9">{{info.summary.guest.hostName}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">IP Address:</div>
+			<div class="col-md-9">{{info.summary.guest.ipAddress}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">Notes:</div>
+			<div class="col-md-9">{{info.summary.config.annotation || ""}}</div>
+		</div>
+	</div>
+</div>
+<!-- 
+summary
+"storage": {
+    "committed": "2375409219",
+    "uncommitted": "15394144256",
+    "unshared": "2375409219",
+    "timestamp": "2013-09-17T18:54:51.159454Z"
+  },
+"quickStats": {
+    "overallCpuUsage": "5",
+    "guestMemoryUsage": "20",
+    "hostMemoryUsage": "530",
+    "guestHeartbeatStatus": "green",
+    "sharedMemory": "0",
+    "swappedMemory": "0",
+    "balloonedMemory": "0",
+    "consumedOverheadMemory": "20",
+    "compressedMemory": "0",
+    "uptimeSeconds": "279056"
+  },
+ -->

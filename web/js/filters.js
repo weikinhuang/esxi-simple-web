@@ -68,11 +68,11 @@
 	});
 
 	module.filter("roundMemory", function() {
-		return function(memory, divisor) {
+		return function(memory, divisor, precision) {
 			if (!memory) {
 				return memory;
 			}
-			return (parseInt(memory, 10) / Math.pow(1024, divisor || 0)).toFixed(0);
+			return (parseInt(memory, 10) / Math.pow(1024, divisor || 0)).toFixed(precision || 0);
 		};
 	});
 

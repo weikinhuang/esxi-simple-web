@@ -161,26 +161,72 @@
 		};
 	} ]);
 
-	module.controller("VmController", [ "$scope", "$routeParams", "esxApi", function($scope, $routeParams, esxApi) {
-		$scope.id = $routeParams.id;
+	module.controller("VmController", [ "$scope", "$routeParams", "esxApi", "$rootScope", function($scope, $routeParams, esxApi, $rootScope) {
+		var vmId = $routeParams.id;
+		$scope.id = vmId;
 
-		$scope.info = esxApi.get({
-			moid : $routeParams.id
-		}).then(function(data) {
-			console.log(data);
-			return data;
-		});
+		var refreshInterval = 30;
+
+		$scope.cpuPercent = 0;
+		$scope.memPercent = 0;
+		$scope.networks = {};
+		$scope.datastores = {};
+
+		function getVmData(shouldUpdate) {
+			var vmInfoResponse = esxApi.get({
+				moid : vmId
+			});
+			vmInfoResponse.then(function(data) {
+				console.log(data);
+				delete data.summary.runtime.featureRequirement;
+				console.log(JSON.stringify(data.guest, null, 2));
+				console.log(JSON.stringify(data.summary, null, 2));
+				return data;
+			});
+			vmInfoResponse.then(function(data) {
+				$rootScope.title = "Vm: " + data.config.name;
+
+				$scope.cpuPercent = (data.summary.quickStats.overallCpuUsage / data.summary.runtime.maxCpuUsage) * 100;
+				$scope.memPercent = (data.summary.quickStats.guestMemoryUsage / data.summary.runtime.maxMemoryUsage) * 100;
+
+				// also get network and datastore info
+				$scope.datastores = {};
+				(Array.isArray(data.datastore.ManagedObjectReference) ? data.datastore.ManagedObjectReference : [ data.datastore.ManagedObjectReference ]).forEach(function(ds) {
+					$scope.datastores[ds["#text"]] = esxApi.get({
+						moid : ds["#text"]
+					});
+				});
+				$scope.networks = {};
+				(Array.isArray(data.network.ManagedObjectReference) ? data.network.ManagedObjectReference : [ data.network.ManagedObjectReference ]).forEach(function(net) {
+					$scope.networks[net["#text"]] = esxApi.get({
+						moid : net["#text"]
+					});
+				});
+				return data;
+			});
+			if (shouldUpdate) {
+				vmInfoResponse.then(function(data) {
+					setTimeout(function() {
+						getVmData(true).then(function(data) {
+							$scope.info = data;
+							return data;
+						});
+					}, refreshInterval * 1000);
+					return data;
+				});
+			}
+			return vmInfoResponse;
+		}
+
+		$scope.info = getVmData(true);
 
 		$scope.powerOn = function(vm) {
 			if (!confirm("Power on virtual machine?")) {
 				return;
 			}
 			esxApi.post({
-				moid : $routeParams.id,
+				moid : vmId,
 				method : "powerOn"
-			}).then(function(data) {
-				console.log(data);
-				return data;
 			});
 		};
 		$scope.powerOff = function(vm) {
@@ -188,11 +234,8 @@
 				return;
 			}
 			esxApi.post({
-				moid : $routeParams.id,
+				moid : vmId,
 				method : "powerOff"
-			}).then(function(data) {
-				console.log(data);
-				return data;
 			});
 		};
 		$scope.shutdownGuest = function(vm) {
@@ -200,11 +243,8 @@
 				return;
 			}
 			esxApi.post({
-				moid : $routeParams.id,
+				moid : vmId,
 				method : "shutdownGuest"
-			}).then(function(data) {
-				console.log(data);
-				return data;
 			});
 		};
 	} ]);

@@ -17,6 +17,17 @@
 	white-space: nowrap;
 }
 
+.container [class^="col-"] {
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+.container .row {
+	padding-bottom: 4px;
+}
+.progress {
+	margin-bottom: 0;
+}
+
 @media (max-width: 767px) {
   .hidden-inline-xs {
     display: none !important;

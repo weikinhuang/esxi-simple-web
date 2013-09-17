@@ -16,7 +16,11 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<p>Cpu: <strong>{{host.summary.quickStats.overallCpuUsage}} MHz</strong> / {{host.summary.hardware.numCpuCores}} x {{host.summary.hardware.cpuMhz}} MHz</p>
+				Cpu: <strong>{{host.summary.quickStats.overallCpuUsage}} MHz</strong> / {{host.summary.hardware.numCpuCores}} x {{host.summary.hardware.cpuMhz}} MHz
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
 				<div class="progress">
 					<div class="progress-bar"
 						role="progressbar"
@@ -30,7 +34,11 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<p>Memory: <strong>{{host.summary.quickStats.overallMemoryUsage | roundMemory}} MB</strong> / {{host.summary.hardware.memorySize | roundMemory:2}} MB</p>
+				Memory: <strong>{{host.summary.quickStats.overallMemoryUsage | roundMemory}} MB</strong> / {{host.summary.hardware.memorySize | roundMemory:2}} MB
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
 				<div class="progress">
 					<div class="progress-bar"
 						role="progressbar"
@@ -42,12 +50,16 @@
 				</div>
 			</div>
 		</div>
-		<h5>Storage: {{host.datastore.ManagedObjectReference.length}} Datastore(s)</h5>
+		<div class="row">
+			<strong>Storage: {{host.datastore.ManagedObjectReference.length}} Datastore(s)</strong>
+		</div>
 		<div class="row" data-ng-repeat="datastore in datastores | toArray | orderBy:'summary.name'">
-			<div class="col-md-3"><strong>{{datastore.summary.name}}</strong></div>
+			<div class="col-md-3">
+				<strong><a href="/folder?dcPath=ha-datacenter&dsName={{datastore.summary.name}}" target="_blank">{{datastore.summary.name}}</a></strong>
+			</div>
 			<div class="col-md-1">{{datastore.info.vmfs.ssd == "true" ? "SSD" : "Non-SSD"}}</div>
 			<div class="col-md-4 text-right">{{datastore.summary.freeSpace | roundSpace}} Free / {{datastore.summary.capacity | roundSpace}} Total</div>
-			<div class="col-md-2 text-right">{{datastore.vm.ManagedObjectReference.length}} VMs</div>
+			<div class="col-md-2 text-right">{{datastore.vm.ManagedObjectReference.length || 0}} VMs</div>
 			<div class="col-md-2">
 				<div class="progress">
 					<div class="progress-bar"
@@ -60,10 +72,12 @@
 				</div>
 			</div>
 		</div>
-		<h5>Network: {{host.network.ManagedObjectReference.length}} Network(s)</h5>
+		<div class="row">
+			<strong>Network: {{host.network.ManagedObjectReference.length}} Network(s)</strong>
+		</div>
 		<div class="row" data-ng-repeat="network in networks | toArray | orderBy:'summary.name'">
 			<div class="col-md-8"><strong>{{network.summary.name}}</strong></div>
-			<div class="col-md-2 text-right" data-ng-show="network.summary.name">{{network.vm.ManagedObjectReference.length}} VMs</div>
+			<div class="col-md-2 text-right" data-ng-show="network.summary.name">{{network.vm.ManagedObjectReference.length || 0}} VMs</div>
 		</div>
 	</div>
 </div>
@@ -92,7 +106,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-3"><strong>Cores per Socket</strong></div>
-			<div class="col-md-9">{{host.summary.hardware.numCpuCores}}</div>
+			<div class="col-md-9">{{host.summary.hardware.numCpuCores / host.summary.hardware.numCpuPkgs}}</div>
 		</div>
 		<div class="row">
 			<div class="col-md-3"><strong>Logical Processors</strong></div>
