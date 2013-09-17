@@ -1,107 +1,128 @@
-<p>Host: {{host.summary.config.name || "Loading..."}}</p>
-
+<h3>
+	{{host.summary.config.name || "Loading..."}}
+	<small data-ng-show="host.summary.config.product.name">
+		{{host.summary.config.product.name}} {{host.summary.config.product.version}}, {{host.summary.config.product.build}}
+	</small>
+</h3>
 <div>
-	<h3>General</h3>
-	<table class="table">
-		<tr>
-			<td>
-			Cpu: {{host.summary.quickStats.overallCpuUsage}} MHz / {{host.summary.hardware.numCpuCores}} CPUs x {{host.summary.hardware.cpuMhz}} MHz
-			<br />
-			<div class="progress">
-				<div class="progress-bar" role="progressbar" aria-valuenow="{{cpuPercent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{cpuPercent}}%;"></div>
+	<h4>Resources</h4>
+	<div class="container clearfix">
+		<div class="row">
+			<div class="col-md-3">Uptime</div>
+			<div class="col-md-9">
+				<strong>{{host.summary.quickStats.uptime | timeWords}}</strong>
+				<small>Since {{host.summary.runtime.bootTime | date:"medium"}}</small>
 			</div>
-			</td>
-		</tr>
-		<tr>
-			<td>
-			Memory: {{host.summary.quickStats.overallMemoryUsage | roundMemory}} MB / {{host.summary.hardware.memorySize | roundMemory:2}} MB
-			<br />
-			<div class="progress">
-				<div class="progress-bar" role="progressbar" aria-valuenow="{{memPercent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{memPercent}}%;"></div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<p>Cpu: <strong>{{host.summary.quickStats.overallCpuUsage}} MHz</strong> / {{host.summary.hardware.numCpuCores}} x {{host.summary.hardware.cpuMhz}} MHz</p>
+				<div class="progress">
+					<div class="progress-bar"
+						role="progressbar"
+						aria-valuenow="{{cpuPercent}}"
+						aria-valuemin="0"
+						aria-valuemax="100"
+						style="width: {{cpuPercent}}"
+					></div>
+				</div>
 			</div>
-			</td>
-		</tr>
-		<tr>
-			<th>Model</th>
-			<td>{{host.summary.hardware.model || ""}}</td>
-		</tr>
-		<tr>
-			<th>Processor Type</th>
-			<td>{{host.summary.hardware.cpuModel}}</td>
-		</tr>
-		<tr>
-			<th>Logical Processors</th>
-			<td>{{host.summary.hardware.numCpuCores}}</td>
-		</tr>
-		<tr>
-			<th>NICs</th>
-			<td>{{host.summary.hardware.numNics}}</td>
-		</tr>
-		<tr>
-			<th>Virtual Machines</th>
-			<td>{{host.vm.ManagedObjectReference.length}}</td>
-		</tr>
-		<tr>
-			<th>State</th>
-			<td>{{host.summary.runtime.connectionState | camelcaseToSpace | ucwords}}</td>
-		</tr>
-		<tr>
-			<th>Uptime</th>
-			<td>{{host.summary.quickStats.uptime | timeWords}}</td>
-		</tr>
-	</table>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<p>Memory: <strong>{{host.summary.quickStats.overallMemoryUsage | roundMemory}} MB</strong> / {{host.summary.hardware.memorySize | roundMemory:2}} MB</p>
+				<div class="progress">
+					<div class="progress-bar"
+						role="progressbar"
+						aria-valuenow="{{memPercent}}"
+						aria-valuemin="0"
+						aria-valuemax="100"
+						style="width: {{memPercent}}%;"
+					></div>
+				</div>
+			</div>
+		</div>
+		<h5>Storage: {{host.datastore.ManagedObjectReference.length}} Datastore(s)</h5>
+		<div class="row" data-ng-repeat="datastore in datastores | toArray | orderBy:'summary.name'">
+			<div class="col-md-3"><strong>{{datastore.summary.name}}</strong></div>
+			<div class="col-md-1">{{datastore.info.vmfs.ssd == "true" ? "SSD" : "Non-SSD"}}</div>
+			<div class="col-md-4 text-right">{{datastore.summary.freeSpace | roundSpace}} Free / {{datastore.summary.capacity | roundSpace}} Total</div>
+			<div class="col-md-2 text-right">{{datastore.vm.ManagedObjectReference.length}} VMs</div>
+			<div class="col-md-2">
+				<div class="progress">
+					<div class="progress-bar"
+						role="progressbar"
+						aria-valuenow="{{((datastore.summary.capacity - datastore.summary.freeSpace) / datastore.summary.capacity) * 100}}"
+						aria-valuemin="0"
+						aria-valuemax="100"
+						style="width: {{((datastore.summary.capacity - datastore.summary.freeSpace) / datastore.summary.capacity) * 100}}%;"
+					></div>
+				</div>
+			</div>
+		</div>
+		<h5>Network: {{host.network.ManagedObjectReference.length}} Network(s)</h5>
+		<div class="row" data-ng-repeat="network in networks | toArray | orderBy:'summary.name'">
+			<div class="col-md-8"><strong>{{network.summary.name}}</strong></div>
+			<div class="col-md-2 text-right" data-ng-show="network.summary.name">{{network.vm.ManagedObjectReference.length}} VMs</div>
+		</div>
+	</div>
 </div>
 <div>
-	<h3>Hardware</h3>
-	<table class="table">
-		<tr>
-			<th>Manufacture</th>
-			<td>{{host.summary.hardware.vendor || ""}}</td>
-		</tr>
-		<tr>
-			<th>Model</th>
-			<td>{{host.summary.hardware.model || ""}}</td>
-		</tr>
-		<tr>
-			<th>CPU</th>
-			<td>{{host.summary.quickStats.overallCpuUsage}} MHz / {{host.summary.hardware.numCpuCores}} CPUs x {{host.summary.hardware.cpuMhz}} MHz</td>
-		</tr>
-		<tr>
-			<th>Memory</th>
-			<td>{{host.summary.quickStats.overallMemoryUsage | roundMemory}} MB / {{host.summary.hardware.memorySize | roundMemory:2}} MB</td>
-		</tr>
-		<tr>
-			<th>Networking</th>
-			<td>{{host.summary.config.name}}</td>
-		</tr>
-		<tr>
-			<th>Storage</th>
-			<td>{{host.datastore.ManagedObjectReference.length}} Datastores(s)</td>
-		</tr>
-	</table>
-</div>
-<div>
-	<h3>Configuration</h3>
-	<table class="table">
-		<tr>
-			<th>ESX Version</th>
-			<td>{{host.summary.config.product.name}} {{host.summary.config.product.version}}, {{host.summary.config.product.build}}</td>
-		</tr>
-		<tr>
-			<th>vMotion Enabled</th>
-			<td>{{host.summary.config.vmotionEnabled ? "Yes" : "No"}}</td>
-		</tr>
-		<tr>
-			<th>vSphere HA State</th>
-			<td>{{host.summary.quickStats.overallMemoryUsage | roundMemory}} MB / {{host.summary.hardware.memorySize | roundMemory:2}} MB</td>
-		</tr>
-		<tr>
-			<th>Host Configuration for FT</th>
-			<td>{{host.summary.config.name}}</td>
-		</tr>
-		<tr>
-			<th>EVC Mode</th>
-			<td>{{host.datastore.ManagedObjectReference.length}} Datastores(s)</td>
-		</tr>
-	</table>
+	<h4>General</h4>
+	<div class="container clearfix">
+		<div class="row">
+			<div class="col-md-3"><strong>Manufacturer</strong></div>
+			<div class="col-md-9">{{host.summary.hardware.vendor || ""}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3"><strong>Model</strong></div>
+			<div class="col-md-9">{{host.summary.hardware.model || ""}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3"><strong>CPU Cores</strong></div>
+			<div class="col-md-9">{{host.summary.hardware.numCpuCores}} CPUs x {{host.summary.hardware.cpuMhz}} MHz</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3"><strong>Processor Type</strong></div>
+			<div class="col-md-9">{{host.summary.hardware.cpuModel}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3"><strong>Processor Sockets</strong></div>
+			<div class="col-md-9">{{host.summary.hardware.numCpuPkgs}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3"><strong>Cores per Socket</strong></div>
+			<div class="col-md-9">{{host.summary.hardware.numCpuCores}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3"><strong>Logical Processors</strong></div>
+			<div class="col-md-9">{{host.summary.hardware.numCpuThreads}}</div>
+		</div>
+		<!--
+		<div class="row">
+			<div class="col-md-3"><strong>Hyperthreading</strong></div>
+			<div class="col-md-9"></div>
+		</div>
+		-->
+		<div class="row">
+			<div class="col-md-3"><strong>Number of NICs</strong></div>
+			<div class="col-md-9">{{host.summary.hardware.numNics}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3"><strong>State</strong></div>
+			<div class="col-md-9">{{host.summary.runtime.connectionState | camelcaseToSpace | ucwords}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3"><strong>VMs and Templates</strong></div>
+			<div class="col-md-9">{{host.vm.ManagedObjectReference.length}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3"><strong>vMotion Enabled</strong></div>
+			<div class="col-md-9">{{host.summary.config.vmotionEnabled ? "Yes" : "No"}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3"><strong>Host Config for FT</strong></div>
+			<div class="col-md-9">{{host.summary.config.vmotionEnabled ? "Yes" : "No"}}</div>
+		</div>
+	</div>
 </div>

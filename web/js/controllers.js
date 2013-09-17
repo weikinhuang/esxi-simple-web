@@ -8,18 +8,29 @@
 
 		$scope.cpuPercent = 0;
 		$scope.memPercent = 0;
+		$scope.networks = {};
+		$scope.datastores = {};
 
 		function getHostData(shouldUpdate) {
 			var hostInfoResponse = esxApi.get({
 				moid : "ha-host"
 			});
 			hostInfoResponse.then(function(data) {
-				console.log(data);
-				var summary = data.summary;
-				delete summary.runtime.healthSystemRuntime;
-				console.log(JSON.stringify(summary, null, 2));
 				$scope.cpuPercent = (data.summary.quickStats.overallCpuUsage / (data.summary.hardware.numCpuCores * data.summary.hardware.cpuMhz)) * 100;
 				$scope.memPercent = ((data.summary.quickStats.overallMemoryUsage * (1024 * 1024)) / data.summary.hardware.memorySize) * 100;
+				// also get network and datastore info
+				$scope.datastores = {};
+				data.datastore.ManagedObjectReference.forEach(function(ds) {
+					$scope.datastores[ds["#text"]] = esxApi.get({
+						moid : ds["#text"]
+					});
+				});
+				$scope.networks = {};
+				data.network.ManagedObjectReference.forEach(function(net) {
+					$scope.networks[net["#text"]] = esxApi.get({
+						moid : net["#text"]
+					});
+				});
 				return data;
 			});
 			if (shouldUpdate) {

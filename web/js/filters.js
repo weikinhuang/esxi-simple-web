@@ -76,6 +76,20 @@
 		};
 	});
 
+	module.filter("roundSpace", function() {
+		return function(memory, decimal) {
+			if (!memory) {
+				return memory;
+			}
+			var i = 0, b = parseInt(memory, 10);
+			while ((b / 1024) > 1) {
+				b /= 1024;
+				i++;
+			}
+			return b.toFixed(decimal === 0 || decimal ? decimal : 2) + " " + [ "B", "KB", "MB", "GB", "TB" ][i];
+		};
+	});
+
 	module.filter("camelcaseToSpace", function() {
 		return function(str) {
 			if (!str) {
