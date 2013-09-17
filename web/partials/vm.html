@@ -2,7 +2,7 @@
 	<i class="icon-desktop"></i> {{info.config.name || 'Loading...'}}
 </h3>
 <div class="row">
-	<img data-ng-src="/screen?id={{id}}&w=100" data-ng-if="info.runtime.powerState == 'poweredOn'" />
+	<img data-ng-src="/screen?id={{id}}&w=100&time={{refreshtime}}" data-ng-if="info.runtime.powerState == 'poweredOn'" />
 </div>
 <div>
 State: {{runtime.dataObject.powerState}}
@@ -33,7 +33,7 @@ State: {{runtime.dataObject.powerState}}
 						aria-valuenow="{{cpuPercent}}"
 						aria-valuemin="0"
 						aria-valuemax="100"
-						style="width: {{cpuPercent}}"
+						style="width: {{cpuPercent}}%"
 					></div>
 				</div>
 			</div>

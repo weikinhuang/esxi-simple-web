@@ -179,6 +179,7 @@
 
 		$scope.cpuPercent = 0;
 		$scope.memPercent = 0;
+		$scope.refreshid = +new Date();
 		$scope.networks = {};
 		$scope.datastores = {};
 
@@ -187,6 +188,7 @@
 				clearTimeout(timer);
 				timer = null;
 			}
+			$scope.refreshid = +new Date();
 			var vmInfoResponse = esxApi.get({
 				moid : vmId
 			});
