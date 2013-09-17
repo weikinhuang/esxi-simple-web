@@ -218,6 +218,9 @@
 				if (data.guest.disk && !Array.isArray(data.guest.disk)) {
 					data.guest.disk = [ data.guest.disk ];
 				}
+				if (data.guest.net && !Array.isArray(data.guest.net)) {
+					data.guest.net = [ data.guest.net ];
+				}
 
 				data.summary.storage.provisioned = parseInt(data.summary.storage.committed, 10) + parseInt(data.summary.storage.uncommitted, 10);
 				return data;

@@ -81,7 +81,6 @@
 			if (!space) {
 				return space;
 			}
-			console.log(space);
 			var i = 0, b = parseInt(space, 10);
 			while ((b / 1024) > 1) {
 				b /= 1024;
