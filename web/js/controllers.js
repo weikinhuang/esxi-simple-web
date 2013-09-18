@@ -58,6 +58,12 @@
 		}
 
 		$scope.host = getHostData(true);
+
+		$scope.$on("$destroy", function() {
+			if (timer) {
+				clearInterval(timer);
+			}
+		});
 	} ]);
 
 	module.controller("VmListController", [ "$scope", "esxApi", "hostname", "$rootScope", function($scope, esxApi, hostname, $rootScope) {
@@ -110,16 +116,20 @@
 					if (vms[vmId]) {
 						newVms[vmId] = vms[vmId];
 						esxApi.get({
-							moid : vmId
+							moid : vmId,
+							doPath : "summary"
 						}).then(function(data) {
-							newVms[vmId].info = data;
-							return data;
+							newVms[vmId].info = data.dataObject;
+							return data.dataObject;
 						});
 					} else {
 						var vmData = {
 							id : vmId,
 							info : esxApi.get({
-								moid : vmId
+								moid : vmId,
+								doPath : "summary"
+							}).then(function(data) {
+								return data.dataObject;
 							})
 						};
 						newVms[vmId] = vmData;
@@ -152,31 +162,6 @@
 				return;
 			}
 			loadVms();
-		};
-
-		$scope.powerOn = function(vm) {
-			if (!vm.info.config || !vm.info.config.name) {
-				return;
-			}
-			if (!confirm("Power on " + vm.info.config.name + "?")) {
-				return;
-			}
-			esxApi.post({
-				moid : vm.id,
-				method : "powerOn"
-			});
-		};
-		$scope.shutdownGuest = function(vm) {
-			if (!vm.info.config || !vm.info.config.name) {
-				return;
-			}
-			if (!confirm("Shutdown " + vm.info.config.name + "?")) {
-				return;
-			}
-			esxApi.post({
-				moid : vm.id,
-				method : "shutdownGuest"
-			});
 		};
 	} ]);
 
@@ -237,10 +222,10 @@
 				return data;
 			});
 			vmInfoResponse.then(function(data) {
-				console.log(data);
-				delete data.summary.runtime.featureRequirement;
-				console.log(JSON.stringify(data.guest, null, 2));
-				console.log(JSON.stringify(data.summary, null, 2));
+				// console.log(data);
+				// delete data.summary.runtime.featureRequirement;
+				// console.log(JSON.stringify(data.guest, null, 2));
+				// console.log(JSON.stringify(data.summary, null, 2));
 				return data;
 			});
 			if (shouldUpdate) {
@@ -258,6 +243,12 @@
 		}
 
 		$scope.info = getVmData(true);
+
+		$scope.$on("$destroy", function() {
+			if (timer) {
+				clearInterval(timer);
+			}
+		});
 
 		$scope.powerOn = function(vm) {
 			if (!confirm("Power on virtual machine?")) {

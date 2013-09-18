@@ -4,7 +4,7 @@
 <table class="table" style="width:100%">
 <thead>
 	<tr>
-		<th colspan="2">Name</th>
+		<th>Name</th>
 		<th class="text-center"><span class="hidden-inline-xs">Host </span>CPU</th>
 		<th class="text-center"><span class="hidden-inline-xs">Guest </span>Mem</th>
 		<th class="hidden-xs hidden-sm text-center">Host Mem</th>
@@ -14,36 +14,25 @@
 <tbody>
 
 </tbody>
-<tr data-ng-repeat="(vmid, vm) in vmList | toArray | orderBy:'info.config.name'" class="ng-class:vm.info.runtime.powerState">
+<tr data-ng-repeat="vm in vmList | toArray | orderBy:'info.config.name'" class="ng-class:vm.info.runtime.powerState">
 	<td class="no-wrap vm-col-name">
 		<div class="st-fade">
 			<i class="icon icon-desktop ng-class:vm.info.runtime.powerState"></i>
 			<a data-ng-href="#/vm/{{vm.id}}">{{vm.info.config.name || 'Loading...'}}</a>
 		</div>
 	</td>
-	<td class="no-wrap vm-col-power">
-		<span class="hidden-inline-xs hidden-inline-sm">{{vm.info.runtime.powerState}}</span>
-		<!-- Power On options -->
-		<a href="" data-ng-if="vm.info.runtime.powerState != 'poweredOn'" data-ng-click="powerOn(vm)" data-prevent-default="">
-			<i class="icon icon-play" title="Power On"></i><span class="hidden-inline-xs hidden-inline-sm">Power On</span>
-		</a>
-		<!-- Power Off options -->
-		<a href="" data-ng-if="vm.info.runtime.powerState == 'poweredOn'" data-ng-click="shutdownGuest(vm)" data-prevent-default="">
-			<i class="icon icon-stop" title="Shutdown Guest"></i><span class="hidden-inline-xs hidden-inline-sm">Shutdown Guest</span>
-		</a>
+	<td class="text-right no-wrap">
+		{{vm.info.quickStats.overallCpuUsage || '0'}} MHz
 	</td>
 	<td class="text-right no-wrap">
-		{{vm.info.summary.quickStats.overallCpuUsage || '0'}} MHz
-	</td>
-	<td class="text-right no-wrap">
-		{{vm.info.summary.quickStats.guestMemoryUsage || '0'}} MB
+		{{vm.info.quickStats.guestMemoryUsage || '0'}} MB
 	</td>
 	<td class="text-right hidden-xs hidden-sm no-wrap">
-		{{vm.info.summary.quickStats.hostMemoryUsage || '0'}} MB
+		{{vm.info.quickStats.hostMemoryUsage || '0'}} MB
 	</td>
 	<td class="text-right no-wrap">
-		{{vm.info.summary.storage.committed / (1024 * 1024 * 1024) | number:2}} GB 
-		<span class="hidden-inline-xs hidden-inline-sm">/ {{vm.info.summary.storage.uncommitted / (1024 * 1024 * 1024) | number:2}} GB</span>
+		{{(vm.info.storage.committed | roundSpace:2) || ""}} 
+		<span class="hidden-inline-xs hidden-inline-sm" data-ng-show="vm.info.storage.uncommitted">/ {{(((vm.info.storage.uncommitted * 1) + (vm.info.storage.committed * 1)) | roundSpace:2) || ""}}</span>
 	</td>
 </tr>
 </tbody>
