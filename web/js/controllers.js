@@ -3,23 +3,28 @@
 /* Controllers */
 (function(module) {
 	module.controller("HomeController", [ "$scope", "esxApi", "hostname", "$rootScope", function($scope, esxApi, hostname, $rootScope) {
-		var refreshInterval = 30, timer = null;
+		var refreshInterval = 30, timer = null, isRefreshing = false;
 		$rootScope.title = "Welcome to " + hostname;
 
 		$scope.cpuPercent = 0;
 		$scope.memPercent = 0;
 		$scope.networks = {};
 		$scope.datastores = {};
+		$scope.isRefreshing = false;
 
 		function getHostData(shouldUpdate) {
 			if (timer) {
 				clearTimeout(timer);
 				timer = null;
 			}
+			isRefreshing = true;
+			$scope.isRefreshing = true;
 			var hostInfoResponse = esxApi.get({
 				moid : "ha-host"
 			});
 			hostInfoResponse.then(function(data) {
+				isRefreshing = false;
+				$scope.isRefreshing = false;
 				$scope.cpuPercent = (data.summary.quickStats.overallCpuUsage / (data.summary.hardware.numCpuCores * data.summary.hardware.cpuMhz)) * 100;
 				$scope.memPercent = ((data.summary.quickStats.overallMemoryUsage * (1024 * 1024)) / data.summary.hardware.memorySize) * 100;
 				// also get network and datastore info
@@ -64,6 +69,13 @@
 				clearInterval(timer);
 			}
 		});
+
+		$scope.refresh = function() {
+			if (isRefreshing) {
+				return;
+			}
+			loadVms();
+		};
 	} ]);
 
 	module.controller("VmListController", [ "$scope", "esxApi", "hostname", "$rootScope", function($scope, esxApi, hostname, $rootScope) {
@@ -76,9 +88,10 @@
 		var vms = {};
 		$scope.totalVms = "Loading...";
 		$scope.vmList = vms;
+		$scope.isRefreshing = false;
 
 		function loadVms() {
-			$scope.refreshStatus = "Refreshing...";
+			$scope.isRefreshing = true;
 			isRefreshing = true;
 
 			var apiResponse = esxApi.get({
@@ -91,8 +104,8 @@
 				} else {
 					$scope.totalVms = data.childEntity.ManagedObjectReference.length;
 				}
-				$scope.refreshStatus = "Refresh";
 				isRefreshing = false;
+				$scope.isRefreshing = false;
 				return data;
 			});
 
@@ -169,24 +182,29 @@
 		var vmId = $routeParams.id;
 		$scope.id = vmId;
 
-		var refreshInterval = 30, timer = null;
+		var refreshInterval = 30, timer = null, isRefreshing = false;
 
 		$scope.cpuPercent = 0;
 		$scope.memPercent = 0;
 		$scope.refreshid = +new Date();
 		$scope.networks = {};
 		$scope.datastores = {};
+		$scope.isRefreshing = false;
 
 		function getVmData(shouldUpdate) {
 			if (timer) {
 				clearTimeout(timer);
 				timer = null;
 			}
+			isRefreshing = true;
+			$scope.isRefreshing = true;
 			$scope.refreshid = +new Date();
 			var vmInfoResponse = esxApi.get({
 				moid : vmId
 			});
 			vmInfoResponse.then(function(data) {
+				isRefreshing = false;
+				$scope.isRefreshing = false;
 				$rootScope.title = "Vm: " + data.config.name;
 
 				$scope.cpuPercent = (data.summary.quickStats.overallCpuUsage / data.summary.runtime.maxCpuUsage) * 100;
@@ -221,13 +239,13 @@
 				data.summary.storage.provisioned = parseInt(data.summary.storage.committed, 10) + parseInt(data.summary.storage.uncommitted, 10);
 				return data;
 			});
-			vmInfoResponse.then(function(data) {
-				// console.log(data);
-				// delete data.summary.runtime.featureRequirement;
-				// console.log(JSON.stringify(data.guest, null, 2));
-				// console.log(JSON.stringify(data.summary, null, 2));
-				return data;
-			});
+			// vmInfoResponse.then(function(data) {
+			// console.log(data);
+			// delete data.summary.runtime.featureRequirement;
+			// console.log(JSON.stringify(data.guest, null, 2));
+			// console.log(JSON.stringify(data.summary, null, 2));
+			// return data;
+			// });
 			if (shouldUpdate) {
 				vmInfoResponse.then(function(data) {
 					timer = setTimeout(function() {
@@ -250,33 +268,32 @@
 			}
 		});
 
-		$scope.powerOn = function(vm) {
-			if (!confirm("Power on virtual machine?")) {
+		$scope.refresh = function() {
+			if (isRefreshing) {
 				return;
 			}
-			esxApi.post({
-				moid : vmId,
-				method : "powerOn"
-			});
+			getVmData(true);
 		};
-		$scope.powerOff = function(vm) {
-			if (!confirm("Power off virtual machine?")) {
-				return;
-			}
-			esxApi.post({
-				moid : vmId,
-				method : "powerOff"
-			});
-		};
-		$scope.shutdownGuest = function(vm) {
-			if (!confirm("Shutdown virtual machine?")) {
-				return;
-			}
-			esxApi.post({
-				moid : vmId,
-				method : "shutdownGuest"
-			});
-		};
+
+		angular.forEach({
+			"powerOn" : "Power on ",
+			"powerOff" : "Power off ",
+			"shutdownGuest" : "Shutdown ",
+			"rebootGuest" : "Reboot "
+		}, function(desc, action) {
+			$scope[action] = function(vm) {
+				if (!vm || !vm.config || !vm.config.name) {
+					return;
+				}
+				if (!confirm(desc + vm.config.name + " ?")) {
+					return;
+				}
+				esxApi.post({
+					moid : vmId,
+					method : action
+				});
+			};
+		});
 	} ]);
 
 	module.controller("NavigationController", function($scope, $location) {

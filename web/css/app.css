@@ -268,12 +268,16 @@
 }
 
 
-.vm-list .icon.poweredOn {
+.icon.poweredOn {
 	color: #00974d;
 }
-.vm-list .icon.poweredOff {
+.icon.poweredOff {
 	color: #f00;
 }
-.vm-list .icon.suspended {
+.icon.suspended {
 	color: #f6da3c;
+}
+
+.power-actions .btn {
+	margin-bottom: 4px;
 }

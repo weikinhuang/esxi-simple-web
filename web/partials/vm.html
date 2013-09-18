@@ -1,14 +1,34 @@
 <h3>
-	<i class="icon-desktop"></i> {{info.config.name || 'Loading...'}}
+	<i class="icon icon-desktop {{info.runtime.powerState}}"></i> {{info.config.name || 'Loading...'}}
 </h3>
 <div class="row">
 	<img data-ng-src="/screen?id={{id}}&w=100&time={{refreshtime}}" data-ng-if="info.runtime.powerState == 'poweredOn'" />
 </div>
-<div>
-State: {{runtime.dataObject.powerState}}
-<a href="" data-ng-if="info.runtime.powerState != 'poweredOn'" data-ng-click="powerOn(vm)" data-prevent-default="">Power On</a>
-<a href="" data-ng-if="info.runtime.powerState == 'poweredOn'" data-ng-click="powerOff(vm)"data-prevent-default="">Power Off</a>
-<a href="" data-ng-if="info.runtime.powerState == 'poweredOn'" data-ng-click="shutdownGuest(vm)"data-prevent-default="">Shutdown Guest</a>
+<div class="row">
+	<div class="col-md-12">
+		<h4>State: {{info.runtime.powerState | camelcaseToSpace | ucwords}}</h4>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-10 power-actions">
+		<a href="" class="btn btn-success" data-ng-if="info.runtime.powerState && info.runtime.powerState != 'poweredOn'" data-ng-click="powerOn(info)" data-prevent-default="">
+			<i class="icon-play"></i> Power On
+		</a>
+		<a href="" class="btn btn-warning" data-ng-if="info.runtime.powerState && info.runtime.powerState == 'poweredOn'" data-ng-click="shutdownGuest(info)"data-prevent-default="">
+			<i class="icon-stop"></i> Shutdown Guest
+		</a>
+		<a href="" class="btn btn-info" data-ng-if="info.runtime.powerState && info.runtime.powerState == 'poweredOn'" data-ng-click="rebootGuest(info)"data-prevent-default="">
+			<i class="icon-repeat"></i> Reboot Guest
+		</a>
+		<a href="" class="btn btn-danger" data-ng-if="info.runtime.powerState && info.runtime.powerState == 'poweredOn'" data-ng-click="powerOff(info)"data-prevent-default="">
+			<i class="icon-power-off"></i> Power Off
+		</a>
+	</div>
+	<div class="col-md-2 text-right">
+		<a href="" class="btn btn-primary" data-ng-click="refresh()" data-prevent-default="">
+			<i class="icon-refresh ng-class:{'icon-spin':isRefreshing}"></i> Refresh
+		</a>
+	</div>
 </div>
 <div>
 	<h4>Resources</h4>
