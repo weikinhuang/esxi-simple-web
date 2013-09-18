@@ -281,3 +281,22 @@
 .power-actions .btn {
 	margin-bottom: 4px;
 }
+
+.screenshot-wrapper {
+	text-align: center;
+	vertical-align: center;
+	overflow: hidden;
+	max-height: 75px;
+	min-height: 75px;
+	-moz-transition: max-height 0.5s cubic-bezier(0,1.12,.39,.98);
+	-ms-transition: max-height 0.5s cubic-bezier(0,1.12,.39,.98);
+	-o-transition: max-height 0.5s cubic-bezier(0,1.12,.39,.98);
+	-webkit-transition: max-height 0.5s cubic-bezier(0,1.12,.39,.98);
+	transition: max-height 0.5s cubic-bezier(0,1.12,.39,.98);
+}
+.screenshot-wrapper:hover {
+	max-height: 100000px;
+}
+.screenshot-wrapper img {
+	width: 100%;
+}

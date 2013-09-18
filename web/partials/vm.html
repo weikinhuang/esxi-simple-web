@@ -2,7 +2,9 @@
 	<i class="icon icon-desktop {{info.runtime.powerState}}"></i> {{info.config.name || 'Loading...'}}
 </h3>
 <div class="row">
-	<img data-ng-src="/screen?id={{id}}&w=100&time={{refreshtime}}" data-ng-if="info.runtime.powerState == 'poweredOn'" />
+	<div class="screenshot-wrapper">
+		<img data-ng-src="/screen?id={{id}}&time={{refreshtime}}" data-ng-if="info.runtime.powerState == 'poweredOn'" />
+	</div>
 </div>
 <div class="row">
 	<div class="col-md-12">
