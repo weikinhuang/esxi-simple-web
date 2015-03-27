@@ -95,8 +95,17 @@
 					return data;
 				}
 
+				// If there's only one VM on host, then data.childEntity.ManagedObjectReference 
+				// will be an object rather than an array of a single object
+				var vmObjects = [];
+				if(data.childEntity.ManagedObjectReference.length === undefined) {
+					vmObjects.push(data.childEntity.ManagedObjectReference);
+				} else {
+					vmObjects = data.childEntity.ManagedObjectReference;
+				}
+
 				var newVms = {};
-				angular.forEach(data.childEntity.ManagedObjectReference, function(vm) {
+				angular.forEach(vmObjects, function(vm) {
 					var vmId = vm["#text"];
 					if (vms[vmId]) {
 						newVms[vmId] = vms[vmId];
