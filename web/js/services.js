@@ -97,4 +97,4 @@
 		};
 	});
 
-})(angular.module("esxiApp.services", []));
+})(angular.module("esxiMob.services", []));

@@ -12,4 +12,4 @@
 		};
 	});
 
-})(angular.module("esxiApp.directives", []));
+})(angular.module("esxiMob.directives", []));

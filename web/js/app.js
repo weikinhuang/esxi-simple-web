@@ -1,29 +1,42 @@
 "use strict";
 
 (function(window) {
-
-	var depends = [ "ngRoute", "esxiApp.filters", "esxiApp.services", "esxiApp.directives", "esxiApp.controllers" ];
+	var appName = "esxiMob";
+	var inject = [
+		"ngMaterial",
+		"ngRoute",
+		"ngTouch",
+		appName + ".filters",
+		appName + ".services",
+		appName + ".directives",
+		appName + ".controllers"
+	];
 	// Declare app level module which depends on filters, and services
-	var app = angular.module("esxiApp", depends);
-	app.config([ "$routeProvider", function($routeProvider) {
-		$routeProvider.when("/", {
-			templateUrl : "partials/home.html",
-			controller : "HomeController"
-		});
+	var app = angular.module(appName, inject);
 
-		$routeProvider.when("/vm", {
-			templateUrl : "partials/vm-list.html",
-			controller : "VmListController"
-		});
-		$routeProvider.when("/vm/:id", {
-			templateUrl : "partials/vm.html",
-			controller : "VmController"
-		});
+	app.config([
+		"$routeProvider",
+		function($routeProvider) {
+			$routeProvider.when("/", {
+				templateUrl : "partials/home.html",
+				controller : "HomeController"
+			});
 
-		$routeProvider.otherwise({
-			redirectTo : "/"
-		});
-	} ]);
+			$routeProvider.when("/vm", {
+				templateUrl : "partials/vm-list.html",
+				controller : "VmListController"
+			});
+
+			$routeProvider.when("/vm/:id", {
+				templateUrl : "partials/vm.html",
+				controller : "VmController"
+			});
+
+			$routeProvider.otherwise({
+				redirectTo : "/"
+			});
+		}
+	]);
 
 	// REPLACING BROKEN IMAGES WITH A 1x1 GIF
 	// --------------------------------------------------

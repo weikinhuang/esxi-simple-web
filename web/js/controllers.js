@@ -114,7 +114,7 @@
 					return data;
 				}
 
-				// If there's only one VM on host, then data.childEntity.ManagedObjectReference 
+				// If there's only one VM on host, then data.childEntity.ManagedObjectReference
 				// will be an object rather than an array of a single object
 				var vmObjects = [];
 				if(data.childEntity.ManagedObjectReference.length === undefined) {
@@ -296,12 +296,12 @@
 		});
 	} ]);
 
-	module.controller("NavigationController", function($scope, $location) {
-		$scope.hostname = $location.host();
-		$scope.navItems = {
+	module.controller("NavController", function($location) {
+		this.hostname = $location.host();
+		this.navItems = {
 			"/" : "Home",
 			"/vm" : "Virtual Machines"
 		};
 	});
 
-})(angular.module("esxiApp.controllers", []));
+})(angular.module("esxiMob.controllers", []));

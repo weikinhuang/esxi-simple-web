@@ -99,4 +99,4 @@
 		};
 	});
 
-})(angular.module("esxiApp.filters", []));
+})(angular.module("esxiMob.filters", []));

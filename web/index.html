@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-ng-app="esxiApp">
+<html lang="en" data-ng-app="esxiMob">
 <head>
 	<meta charset="utf-8">
 	<meta name="description" content="Esxi MOB browser">
@@ -7,55 +7,48 @@
 	<link rel="shortcut icon" href="favicon.png">
 
 	<script>document.write("<title ng-bind=\"title\">Welcome to " + document.location.hostname + "</title>");</script>
-	
+
 	<!-- fixed viewport -->
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-	<!-- Bootstrap core CSS -->
-	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css" rel="stylesheet">
-	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+	<!-- Material Design CSS -->
+	<link href="//ajax.googleapis.com/ajax/libs/angular_material/0.8.3/angular-material.min.css" rel="stylesheet">
+	<!-- Font Awesome icons -->
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet">
 	<!-- Page styles -->
 	<link href="css/app.css" rel="stylesheet" media="screen">
 </head>
 
-<body data-ng-cloak="">
+<body ng-cloak>
 
-	<header class="navbar navbar-inverse navbar-fixed-top" data-ng-controller="NavigationController">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="#/">ESXi - {{hostname}}</a>
-			</div>
-			<div class="collapse navbar-collapse">
-				<ul class="nav navbar-nav">
-					<li data-ng-repeat="(navUrl, navItem) in navItems"><a href="#{{navUrl}}">{{navItem}}</a></li>
-				</ul>
-			</div><!--/.nav-collapse -->
-		</div>
-	</header>
+	<md-toolbar md-scroll-shrink>
+		<header class="md-toolbar-tools" ng-controller="NavController as navCtrl">
+			<h1>
+				<span>ESXi - {{navCtrl.hostname}}</span>
+			</h1>
+			<span flex></span>
+			<md-button ng-repeat="(navUrl, navItem) in navCtrl.navItems track by navUrl" ng-href="#{{navUrl}}">
+				{{navItem}}
+			</md-button>
+		</header>
+	</md-toolbar>
 
-	<div class="container" role="main">
-		<div data-ng-view=""></div>
-	</div>
+	<md-content layout-padding role="main">
+		<ng-view></ng-view>
+	</md-content>
 
-	<!-- Bootstrap core JavaScript
-	================================================== -->
-	<!-- Placed at the end of the document so the pages load faster -->
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-	<!-- Angular js -->
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-route.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-touch.min.js"></script>
-	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<!-- End of file javascript -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-route.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-touch.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angular_material/0.8.3/angular-material.min.js"></script>
+
+	<!-- vendor scripts -->
 	<script src="js/vendor/xml2json.js"></script>
-	<!-- Include spa scripts -->
+
 	<script src="../en/welcomeRes.js"></script>
 	<script src="js/app.js"></script>
 	<script src="js/services.js"></script>
