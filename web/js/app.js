@@ -2,7 +2,7 @@
 
 (function(window) {
 
-	var depends = [ "ngRoute", "ngAnimate", "esxiApp.filters", "esxiApp.services", "esxiApp.directives", "esxiApp.controllers" ];
+	var depends = [ "ngRoute", "esxiApp.filters", "esxiApp.services", "esxiApp.directives", "esxiApp.controllers" ];
 	// Declare app level module which depends on filters, and services
 	var app = angular.module("esxiApp", depends);
 	app.config([ "$routeProvider", function($routeProvider) {
