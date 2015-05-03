@@ -31,3 +31,13 @@ php -S 127.0.0.1:8080 proxy.php
 
 In your browser go to `http://localhost:8080/encrypt.php` to generate the config file.
 Afterwards go to your browser and visit `http://localhost:8080/web/` and start developing!
+
+## Notes
+
+In ESXi 6, the vSphere MOB is disabled by default, this web view requires that it be enabled. virtuallyGhetto
+has already solved this issue in [Quick Tip - vSphere MOB is disabled by default in ESXi 6.0](http://www.virtuallyghetto.com/2015/02/quick-tip-vsphere-mob-is-disabled-by-default-in-esxi-6-0.html).
+
+In the ESXi shell, enable it with the command:
+```bash
+vim-cmd hostsvc/advopt/view Config.HostAgent.plugins.solo.enableMob
+```
