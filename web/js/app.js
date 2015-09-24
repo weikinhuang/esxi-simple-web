@@ -5,7 +5,7 @@
 	var depends = [ "ngRoute", "esxiApp.filters", "esxiApp.services", "esxiApp.directives", "esxiApp.controllers" ];
 	// Declare app level module which depends on filters, and services
 	var app = angular.module("esxiApp", depends);
-	app.config([ "$routeProvider", function($routeProvider) {
+	app.config([ "$routeProvider", "$compileProvider", function($routeProvider, $compileProvider) {
 		$routeProvider.when("/", {
 			templateUrl : "partials/home.html",
 			controller : "HomeController"
@@ -23,6 +23,8 @@
 		$routeProvider.otherwise({
 			redirectTo : "/"
 		});
+		
+		$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|vmrc):/);
 	} ]);
 
 	// REPLACING BROKEN IMAGES WITH A 1x1 GIF

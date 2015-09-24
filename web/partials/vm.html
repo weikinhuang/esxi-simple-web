@@ -1,11 +1,11 @@
 <h3>
 	<i class="icon icon-desktop {{info.runtime.powerState}}"></i> {{info.config.name || 'Loading...'}}
 </h3>
-<div class="row">
+<!--div class="row">
 	<div class="screenshot-wrapper">
 		<img data-ng-src="/screen?id={{id}}&time={{refreshtime}}" data-ng-if="info.runtime.powerState == 'poweredOn'" />
 	</div>
-</div>
+</div-->
 <div class="row">
 	<div class="col-md-12">
 		<h4>State: {{info.runtime.powerState | camelcaseToSpace | ucwords}}</h4>
@@ -24,6 +24,9 @@
 		</a>
 		<a href="" class="btn btn-danger" data-ng-if="info.runtime.powerState && info.runtime.powerState == 'poweredOn'" data-ng-click="powerOff(info)"data-prevent-default="">
 			<i class="icon-power-off"></i> Power Off
+		</a>
+		<a href="vmrc://{{hostname}}/?moid={{id}}" class="btn btn-primary" data-ng-if="info.runtime.powerState && info.runtime.powerState == 'poweredOn'">
+			<i class="glyphicon glyphicon-new-window"></i> Open Console
 		</a>
 	</div>
 	<div class="col-md-2 text-right">
