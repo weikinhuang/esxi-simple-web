@@ -43,5 +43,12 @@ has already solved this issue in [Quick Tip - vSphere MOB is disabled by default
 
 In the ESXi shell, enable it with the command:
 ```bash
+vim-cmd hostsvc/advopt/update Config.HostAgent.plugins.solo.enableMob bool true
+```
+
+Verify that it's true with the command:
+```bash
 vim-cmd hostsvc/advopt/view Config.HostAgent.plugins.solo.enableMob
 ```
+
+You can also enable it manually using vsphere by selecting the parent node of the vm tree, configuration tab, click Advanced Settings under Software, expand Config > HostAgent > Plugins > solo > enableMob, and set it to true.
