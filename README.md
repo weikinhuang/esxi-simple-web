@@ -8,6 +8,10 @@ web interface straight from the ESXi host without the need for the vCenter web c
 
 Inspired by virtuallyGhetto's [Ghetto webAccess for ESXi](http://www.virtuallyghetto.com/2011/12/ghetto-webaccess-for-esxi.html)
 
+## Deprecation Notice
+
+This method is now deprecated as ESXi 6+ has a web ui built in now using this fling: [ESXi Embedded Host Client](https://labs.vmware.com/flings/esxi-embedded-host-client)
+
 ## Installation & Usage
 
 Copy over the web directory to your esxi host with
