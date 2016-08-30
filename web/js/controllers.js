@@ -178,9 +178,11 @@
 		};
 	} ]);
 
-	module.controller("VmController", [ "$scope", "$routeParams", "esxApi", "$rootScope", function($scope, $routeParams, esxApi, $rootScope) {
+	module.controller("VmController", [ "$scope", "$routeParams", "esxApi", "hostname", "$rootScope", function($scope, $routeParams, esxApi, hostname, $rootScope) {
+	
 		var vmId = $routeParams.id;
 		$scope.id = vmId;
+		$scope.hostname = hostname;
 
 		var refreshInterval = 30, timer = null, isRefreshing = false;
 
